@@ -9,130 +9,110 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <style>
-        /* --- LIQUID GLASS THEME --- */
         :root {
             --bg-1: #0f2027; --bg-2: #203a43; --bg-3: #2c5364;
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.25);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             --accent: #00f260; --accent-grad: linear-gradient(to right, #0575E6, #021B79);
-            --text: #ffffff;
-            --danger: #FF416C;
+            --text: #ffffff; --danger: #FF416C;
         }
 
         body {
             margin: 0; padding: 0;
             background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
             color: var(--text);
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: 'SF Pro Display', -apple-system, sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
             display: flex; flex-direction: column;
         }
 
-        /* Arkaplan Efekti (Liquid Blobs) */
-        .blob {
-            position: absolute; filter: blur(70px); z-index: -1; opacity: 0.6;
-            animation: move 10s infinite alternate;
-        }
-        .blob-1 { top: 10%; left: 10%; width: 200px; height: 200px; background: #0575E6; border-radius: 40% 60% 70% 30%; }
-        .blob-2 { bottom: 20%; right: 10%; width: 250px; height: 250px; background: #8E2DE2; border-radius: 60% 40% 30% 70%; }
-        @keyframes move { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(20px, 40px) rotate(20px); } }
+        .blob { position: absolute; filter: blur(80px); z-index: -1; opacity: 0.5; animation: move 15s infinite alternate; }
+        .blob-1 { top: 0; left: 0; width: 300px; height: 300px; background: #0575E6; border-radius: 50%; }
+        .blob-2 { bottom: 0; right: 0; width: 300px; height: 300px; background: #8E2DE2; border-radius: 50%; }
+        @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
-        /* --- UI COMPONENTS --- */
-        .screen { display: none; flex-direction: column; padding: 20px; padding-top: 60px; min-height: 100vh; box-sizing: border-box; align-items: center; }
+        .screen { display: none; flex-direction: column; padding: 20px; padding-top: 50px; min-height: 100vh; box-sizing: border-box; align-items: center; }
         .screen.active { display: flex; }
 
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: var(--glass-border);
             box-shadow: var(--glass-shadow);
             border-radius: 24px;
-            padding: 30px;
+            padding: 25px;
             width: 100%; max-width: 400px;
             text-align: center;
             margin-bottom: 20px;
-            animation: popIn 0.4s ease;
         }
-        @keyframes popIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
 
-        h1, h2, h3 { margin: 0 0 15px 0; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        h1, h2, h3 { margin: 0 0 15px 0; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
+        /* LIQUID INPUTS & SELECTS */
         input, select {
-            width: 100%; padding: 16px; margin-bottom: 12px;
-            background: rgba(0,0,0,0.3); border: var(--glass-border); border-radius: 16px;
+            width: 100%; padding: 15px; margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.1); 
+            border: var(--glass-border); border-radius: 16px;
             color: white; font-size: 16px; outline: none; box-sizing: border-box;
             transition: 0.3s;
+            -webkit-appearance: none; appearance: none;
         }
-        input:focus, select:focus { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.5); }
+        /* Select Arrow Icon Hack */
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+        }
+        /* Dropdown options usually can't be styled much, so we keep them dark for visibility */
+        select option { background: #203a43; color: white; }
+        
+        input:focus, select:focus { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
 
         button {
             width: 100%; padding: 16px; margin-top: 10px;
             background: var(--accent-grad); border: none; border-radius: 16px;
             color: white; font-size: 16px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: transform 0.2s;
         }
         button:active { transform: scale(0.97); }
         button.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
-        button.danger { background: linear-gradient(45deg, #FF416C, #FF4B2B); }
 
-        /* --- TABS --- */
         .tab-nav { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; color: #aaa; font-size: 14px; }
-        .tab-btn.active { background: var(--accent-grad); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; color: #ddd; font-size: 14px; border: 1px solid transparent; }
+        .tab-btn.active { background: var(--accent-grad); color: white; border-color: rgba(255,255,255,0.3); }
         .tab-content { display: none; width: 100%; max-width: 400px; }
         .tab-content.active { display: block; }
 
-        /* --- COUNTDOWN & QR --- */
         #qr-wrapper { position: relative; display: inline-block; padding: 15px; background: white; border-radius: 20px; margin-top: 20px; }
         #qr-overlay { 
             position: absolute; top:0; left:0; width:100%; height:100%; 
             background: rgba(255,255,255,0.95); border-radius: 20px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10;
         }
         .countdown-circle {
-            width: 80px; height: 80px; border-radius: 50%;
-            border: 5px solid #0575E6;
+            width: 80px; height: 80px; border-radius: 50%; border: 5px solid #0575E6;
             display: flex; justify-content: center; align-items: center;
             font-size: 30px; font-weight: bold; color: #0575E6;
-            animation: pulse 1s infinite;
+            margin-top: 15px;
         }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(5, 117, 230, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(5, 117, 230, 0); } }
 
-        /* --- TOAST NOTIFICATION (BOTTOM) --- */
-        #toast-container {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; width: 90%; max-width: 350px;
-            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
-        }
-        .toast {
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            color: white; padding: 16px; border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; gap: 15px;
-            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: auto;
-        }
-        .toast.error { border-left: 4px solid var(--danger); }
-        .toast.success { border-left: 4px solid #00f260; }
+        #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 350px; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: rgba(20, 20, 20, 0.9); backdrop-filter: blur(10px); color: white; padding: 16px; border-radius: 16px; border-left: 5px solid; display: flex; align-items: center; gap: 15px; animation: slideUp 0.3s; pointer-events: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .toast.success { border-color: #00f260; } .toast.error { border-color: #FF416C; } .toast.neutral { border-color: #0575E6; }
         @keyframes slideUp { from { transform: translateY(100px); opacity:0; } to { transform: translateY(0); opacity:1; } }
 
-        /* List Items */
-        .list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 16px; margin-bottom: 10px; font-size: 14px; border: 1px solid rgba(255,255,255,0.05); }
         .hidden { display: none !important; }
         
-        /* Static QR Modal */
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; justify-content:center; align-items:center; }
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
     </style>
 </head>
 <body>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
-
     <div id="toast-container"></div>
 
     <div id="screen-home" class="screen active">
@@ -140,7 +120,6 @@
             <i class="fas fa-university" style="font-size: 50px; margin-bottom: 20px; background: linear-gradient(to right, #00f260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
             <h1>Akademik Yoklama</h1>
             <p style="opacity:0.8; margin-bottom: 30px;">Hızlı, Güvenli ve Temassız.</p>
-            
             <button onclick="nav('screen-student-login')"><i class="fas fa-user-graduate"></i> Öğrenci Girişi</button>
             <button class="secondary" onclick="nav('screen-admin-login')"><i class="fas fa-chalkboard-teacher"></i> Akademisyen Girişi</button>
         </div>
@@ -175,10 +154,10 @@
             <div id="tab-scan" class="tab-content active glass-card">
                 <h3>Oturum Başlat</h3>
                 
-                <label style="display:block; text-align:left; font-size:12px; margin-left:5px; opacity:0.7;">Hafta Seçimi</label>
-                <select id="sessWeek"></select>
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px; opacity:0.7; margin-bottom:5px;">Hafta Seçimi</label>
+                <select id="sessWeek" onchange="updateHoursDropdown()"></select>
                 
-                <label style="display:block; text-align:left; font-size:12px; margin-left:5px; opacity:0.7;">Bu Oturum Kaç Saat Sayılsın?</label>
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px; opacity:0.7; margin-bottom:5px;">Bu Oturum Kaç Saat Sayılsın?</label>
                 <select id="sessHours"></select>
 
                 <div id="scan-controls">
@@ -190,19 +169,15 @@
                     <div id="qr-wrapper">
                         <div id="qrcode"></div>
                         <div id="qr-overlay" class="hidden">
-                            <div style="font-size:14px; color:#555; margin-bottom:10px;">Süre Doldu</div>
+                            <div style="font-size:14px; color:#555;">Süre Doldu</div>
                             <div style="color:#aaa; font-size:40px;"><i class="fas fa-eye-slash"></i></div>
                         </div>
                     </div>
-                    
-                    <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin-top:15px;">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
                         <div class="countdown-circle" id="countdownDisplay">--</div>
-                        <div style="text-align:left; font-size:13px; opacity:0.8;">
-                            Saniye kaldı.<br>
-                            <span style="font-size:11px; opacity:0.5;">Otomatik kapanacak.</span>
-                        </div>
+                        <div style="margin-top:5px; font-size:12px; opacity:0.7;">Saniye Kaldı</div>
                     </div>
-                    <button class="secondary" onclick="resetScanUI()" style="margin-top:15px;">Kapat / Yeni Oturum</button>
+                    <button class="secondary" onclick="resetScanUI()" style="margin-top:20px;">Kapat / Yeni Oturum</button>
                 </div>
             </div>
 
@@ -211,22 +186,16 @@
             </div>
 
             <div id="tab-settings" class="tab-content glass-card">
-                <h3>Ders Ayarları</h3>
-                
+                <h3>Ayarlar</h3>
                 <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">Haftalık Toplam Ders Saati</label>
                 <input type="number" id="setWeeklyHours">
-
-                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">QR Geri Sayım Süresi (Saniye)</label>
-                <input type="number" id="setQrTime" placeholder="Örn: 15">
-
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">QR Süresi (Saniye)</label>
+                <input type="number" id="setQrTime">
                 <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;">
-
-                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">İlk Ders Tarihi (Otomatik Doldur)</label>
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">İlk Ders Tarihi</label>
                 <input type="date" id="firstDate" onchange="autoFillDates()">
-
                 <div id="weeksConfig" style="max-height:300px; overflow-y:auto; margin-top:15px;"></div>
-                
-                <button onclick="saveSettings()">Değişiklikleri Kaydet</button>
+                <button onclick="saveSettings()">Kaydet</button>
             </div>
         </div>
     </div>
@@ -244,7 +213,6 @@
         <div class="glass-card">
             <h3>QR Okut</h3>
             <div id="reader" style="border-radius:15px; overflow:hidden;"></div>
-            <p style="font-size:12px; opacity:0.7; margin-top:10px;">Hocanın ekranındaki kodu okutun.</p>
             <button class="secondary" onclick="stopScan()">İptal</button>
         </div>
     </div>
@@ -259,16 +227,15 @@
     </div>
 
     <script>
-        /* --- CONFIG --- */
-        const API_URL = "https://script.google.com/macros/s/AKfycbzYebviMya8NQ5eTnMWZZb3gjhnP-IddyFbk-aOCd0RgzNjn4AcHguBSvxil13WTp_q/exec"; // GÜNCELLEYİN
-        const SITE_URL = "https://msefagor.github.io/Yoklama/"; // Sabit QR için
+        const API_URL = "https://script.google.com/macros/s/AKfycbya07c_NW1fVRNvLl7f5DvZryJTlrlF3I_bIgEwd8TZVjqpq9XeRx4oqv9h9Bc28L93/exec
+"; // GÜNCELLEYİN
+        const SITE_URL = "https://msefagor.github.io/Yoklama/"; 
 
         let currCourse = null;
         let cData = null;
         let qrScanner = null;
         let countdownInt = null;
 
-        /* --- NAVIGATION & UI --- */
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -281,32 +248,26 @@
             event.target.classList.add('active');
         }
 
-        function showToast(msg, type='success') {
+        function showToast(msg, type='neutral') {
             const con = document.getElementById('toast-container');
             const el = document.createElement('div');
             el.className = `toast ${type}`;
-            el.innerHTML = `<i class="fas ${type=='success'?'fa-check-circle':'fa-exclamation-circle'}"></i> <span>${msg}</span>`;
+            el.innerHTML = `<i class="fas ${type=='success'?'fa-check-circle':type=='error'?'fa-exclamation-circle':'fa-info-circle'}"></i> <span>${msg}</span>`;
             con.appendChild(el);
             setTimeout(() => { el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 4000);
         }
 
-        /* --- API --- */
         async function api(payload) {
             showToast("İşleniyor...", "neutral");
             try {
                 const req = await fetch(API_URL, { method:'POST', body:JSON.stringify(payload) });
                 return await req.json();
-            } catch(e) {
-                showToast("Bağlantı Hatası!", "error");
-                return null;
-            }
+            } catch(e) { showToast("Bağlantı Hatası!", "error"); return null; }
         }
 
-        /* --- ADMIN FLOW --- */
         async function adminLogin() {
             const pass = document.getElementById('adminPass').value;
             const res = await api({ action:'admin_login', password:pass });
-            
             if(res && res.success) {
                 nav('screen-admin-dash');
                 const p = document.getElementById('courseListPanel');
@@ -314,13 +275,8 @@
                 res.courses.forEach(c => {
                     const btn = document.createElement('div');
                     btn.className = "glass-card";
-                    btn.style.textAlign = "left";
-                    btn.style.cursor = "pointer";
-                    btn.style.padding = "20px";
-                    btn.innerHTML = `
-                        <div style="font-size:20px; font-weight:bold;">${c.id}</div>
-                        <div style="opacity:0.8;">${c.name}</div>
-                    `;
+                    btn.style.textAlign="left"; btn.style.cursor="pointer"; btn.style.padding="20px";
+                    btn.innerHTML = `<div style="font-size:18px; font-weight:bold;">${c.id}</div><div style="opacity:0.7;">${c.name}</div>`;
                     btn.onclick = () => loadCourse(c.id);
                     p.appendChild(btn);
                 });
@@ -336,7 +292,7 @@
                 document.getElementById('courseDetailPanel').classList.remove('hidden');
                 document.getElementById('courseTitle').innerText = id;
                 
-                // Populate Settings
+                // Settings
                 document.getElementById('setWeeklyHours').value = res.settings.weeklyHours;
                 document.getElementById('setQrTime').value = res.settings.qrTime;
                 renderWeeksConfig(res.weeks);
@@ -349,21 +305,13 @@
                         const opt = document.createElement('option');
                         opt.value = w.weekNo;
                         opt.text = `${w.weekNo}. Hafta (${w.date})`;
+                        // Backend'den completedHours geldiğini varsayıyoruz
+                        opt.dataset.completed = w.completedHours || 0; 
                         weekSel.add(opt);
                     }
                 });
-
-                // Populate Hours Dropdown (1 to WeeklyHours)
-                const hrSel = document.getElementById('sessHours');
-                hrSel.innerHTML = "";
-                for(let i=1; i<=res.settings.weeklyHours; i++) {
-                    const opt = document.createElement('option');
-                    opt.value = i;
-                    opt.text = i + " Saat";
-                    if(i === parseInt(res.settings.weeklyHours)) opt.selected = true; // Default max
-                    hrSel.add(opt);
-                }
-
+                
+                updateHoursDropdown(); // Initial Update
                 renderStudentList(res.students);
                 setTab('scan');
             }
@@ -375,7 +323,72 @@
             document.getElementById('courseTitle').innerText = "Dersler";
         }
 
-        /* --- SETTINGS & DATES --- */
+        // --- DYNAMIC HOURS LOGIC (REQ 1) ---
+        function updateHoursDropdown() {
+            const weekSel = document.getElementById('sessWeek');
+            const hrSel = document.getElementById('sessHours');
+            const totalWeekly = parseInt(document.getElementById('setWeeklyHours').value) || 3;
+            
+            // Get completed hours for selected week
+            const selectedOpt = weekSel.options[weekSel.selectedIndex];
+            const completed = parseInt(selectedOpt.dataset.completed) || 0;
+            const remaining = totalWeekly - completed;
+
+            hrSel.innerHTML = "";
+            
+            if(remaining <= 0) {
+                const opt = document.createElement('option');
+                opt.text = "Tamamlandı";
+                opt.disabled = true;
+                hrSel.add(opt);
+                // Disable start button maybe? For now just show "Done"
+            } else {
+                for(let i=1; i<=remaining; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.text = i + " Saat";
+                    if(i === remaining) opt.selected = true; // Auto-select max
+                    hrSel.add(opt);
+                }
+            }
+        }
+
+        function renderStudentList(list) {
+            const div = document.getElementById('studentList');
+            div.innerHTML = "";
+            list.sort((a,b)=>a.remaining-b.remaining).forEach(s => {
+                const row = document.createElement('div');
+                row.className = "list-item";
+                
+                let statusText = "";
+                let statusColor = "";
+                let borderColor = "";
+
+                if(s.remaining < 0) {
+                    // KALDI
+                    statusText = `KALDI (${Math.abs(s.remaining)} Saat)`;
+                    statusColor = "#FF416C";
+                    borderColor = "var(--danger)";
+                } else {
+                    // GEÇİYOR
+                    statusText = `Kalan Hak: ${s.remaining} Saat`;
+                    statusColor = "#00f260";
+                    borderColor = "#00f260";
+                }
+
+                row.style.borderLeft = `4px solid ${borderColor}`;
+                row.innerHTML = `
+                    <div><div style="font-weight:bold;">${s.name}</div><div style="font-size:11px; opacity:0.6;">${s.id}</div></div>
+                    <div style="text-align:right;">
+                        <div style="font-weight:bold; color:${statusColor}">${statusText}</div>
+                        <div style="font-size:11px;">Toplam Devamsızlık: ${s.absent}s</div>
+                    </div>
+                `;
+                div.appendChild(row);
+            });
+        }
+
+        /* --- SETTINGS HELPERS --- */
         function renderWeeksConfig(weeks) {
             const div = document.getElementById('weeksConfig');
             div.innerHTML = "";
@@ -383,7 +396,7 @@
                 const row = document.createElement('div');
                 row.className = "list-item";
                 row.innerHTML = `
-                    <div style="width:60px;">Hafta ${w.weekNo}</div>
+                    <div style="width:50px;">H.${w.weekNo}</div>
                     <input type="date" id="d-${w.weekNo}" value="${convertDate(w.date)}" style="width:110px; margin:0; font-size:12px;">
                     <select id="t-${w.weekNo}" style="width:90px; margin:0; font-size:12px;">
                         <option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option>
@@ -396,131 +409,84 @@
                 div.appendChild(row);
             });
         }
-
-        // DD.MM.YYYY -> YYYY-MM-DD (Input için)
-        function convertDate(str) {
-            if(!str) return "";
-            const p = str.split(".");
-            return `${p[2]}-${p[1]}-${p[0]}`;
-        }
-
-        // YYYY-MM-DD -> DD.MM.YYYY (Kaydetmek için)
-        function toTRDate(str) {
-             if(!str) return "";
-             const p = str.split("-");
-             return `${p[2]}.${p[1]}.${p[0]}`;
-        }
-
+        function convertDate(str) { if(!str) return ""; const p = str.split("."); return `${p[2]}-${p[1]}-${p[0]}`; }
         function autoFillDates() {
             let curr = new Date(document.getElementById('firstDate').value);
             if(isNaN(curr.getTime())) return;
-
             cData.weeks.forEach(w => {
                 const inp = document.getElementById(`d-${w.weekNo}`);
-                if(inp) {
-                    inp.value = curr.toISOString().split('T')[0];
-                }
-                curr.setDate(curr.getDate() + 7); // +1 Hafta
+                if(inp) inp.value = curr.toISOString().split('T')[0];
+                curr.setDate(curr.getDate() + 7);
             });
         }
 
         async function saveSettings() {
             const weeks = [];
             cData.weeks.forEach(w => {
-                const dVal = document.getElementById(`d-${w.weekNo}`).value;
                 weeks.push({
                     weekNo: w.weekNo,
-                    date: dVal, // YYYY-MM-DD olarak gidecek, backend formatlayabilir veya string tutar
+                    date: document.getElementById(`d-${w.weekNo}`).value,
                     type: document.getElementById(`t-${w.weekNo}`).value
                 });
             });
-
             const res = await api({
-                action: 'save_settings',
-                courseId: currCourse,
+                action: 'save_settings', courseId: currCourse,
                 weeklyHours: document.getElementById('setWeeklyHours').value,
                 qrTime: document.getElementById('setQrTime').value,
                 weeks: weeks
             });
-
-            if(res && res.success) { showToast("Ayarlar Kaydedildi"); loadCourse(currCourse); }
+            if(res && res.success) { showToast("Kaydedildi", "success"); loadCourse(currCourse); }
         }
 
-        function renderStudentList(list) {
-            const div = document.getElementById('studentList');
-            div.innerHTML = "";
-            list.sort((a,b)=>a.remaining-b.remaining).forEach(s => {
-                const row = document.createElement('div');
-                row.className = "list-item";
-                row.style.borderLeft = s.remaining < 0 ? "4px solid var(--danger)" : "4px solid #00f260";
-                row.innerHTML = `
-                    <div><div style="font-weight:bold;">${s.name}</div><div style="font-size:11px; opacity:0.6;">${s.id}</div></div>
-                    <div style="text-align:right;">
-                        <div style="font-weight:bold; color:${s.remaining<0?'#FF416C':'#00f260'}">${s.remaining<0?'KALDI':s.remaining+' Hak'}</div>
-                        <div style="font-size:11px;">Devamsız: ${s.absent}s</div>
-                    </div>
-                `;
-                div.appendChild(row);
-            });
-        }
-
-        /* --- SESSION & TIMER --- */
+        /* --- SESSION --- */
         async function startSession() {
             const wk = document.getElementById('sessWeek').value;
             const hrs = document.getElementById('sessHours').value;
-            
+            if(!hrs) return showToast("Bu hafta tamamlanmış!", "error");
+
             showToast("Konum alınıyor...");
-            
             navigator.geolocation.getCurrentPosition(async (pos) => {
                 const res = await api({
-                    action: 'start_session',
-                    courseId: currCourse,
-                    weekNo: wk,
-                    hoursVal: hrs,
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude
+                    action: 'start_session', courseId: currCourse,
+                    weekNo: wk, hoursVal: hrs,
+                    lat: pos.coords.latitude, lng: pos.coords.longitude
                 });
 
                 if(res && res.success) {
                     document.getElementById('scan-controls').classList.add('hidden');
                     document.getElementById('qr-area').classList.remove('hidden');
-                    
-                    // QR Generate
-                    const qrEl = document.getElementById('qrcode');
-                    qrEl.innerHTML = "";
+                    const qrEl = document.getElementById('qrcode'); qrEl.innerHTML = "";
                     new QRCode(qrEl, { text: currCourse, width:200, height:200 });
 
-                    // Timer Start
                     let duration = parseInt(document.getElementById('setQrTime').value) || 15;
                     const display = document.getElementById('countdownDisplay');
                     const overlay = document.getElementById('qr-overlay');
-                    overlay.classList.add('hidden'); // Reset overlay
+                    overlay.classList.add('hidden');
 
                     if(countdownInt) clearInterval(countdownInt);
-                    
                     display.innerText = duration;
                     countdownInt = setInterval(() => {
                         duration--;
                         display.innerText = duration;
                         if(duration <= 0) {
                             clearInterval(countdownInt);
-                            overlay.classList.remove('hidden'); // Hide QR
+                            overlay.classList.remove('hidden');
                         }
                     }, 1000);
                 }
-            }, (e) => showToast("GPS Hatası: "+e.message, "error"), {enableHighAccuracy:true});
+            }, (e) => showToast("GPS Hatası", "error"), {enableHighAccuracy:true});
         }
 
         function resetScanUI() {
             if(countdownInt) clearInterval(countdownInt);
             document.getElementById('qr-area').classList.add('hidden');
             document.getElementById('scan-controls').classList.remove('hidden');
+            loadCourse(currCourse); // Reload to update dropdowns
         }
 
         function showStaticQR() {
             const modal = document.getElementById('static-qr-modal');
-            const con = document.getElementById('static-qrcode');
-            con.innerHTML = "";
+            const con = document.getElementById('static-qrcode'); con.innerHTML = "";
             new QRCode(con, { text: SITE_URL, width:200, height:200 });
             modal.classList.remove('hidden');
         }
@@ -528,38 +494,23 @@
         /* --- STUDENT --- */
         function startStudentScan() {
             const id = document.getElementById('stuId').value;
-            if(!id) return showToast("Öğrenci No girin!", "error");
-            
+            if(!id) return showToast("No giriniz", "error");
             nav('screen-student-scan');
             qrScanner = new Html5Qrcode("reader");
             qrScanner.start({ facingMode: "environment" }, { fps:10, qrbox:250 }, async (txt) => {
                 qrScanner.stop();
                 showToast("Konum gönderiliyor...");
-                
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     const res = await api({
-                        action: 'student_scan',
-                        studentId: id,
-                        qrCourseId: txt,
-                        lat: pos.coords.latitude,
-                        lng: pos.coords.longitude
+                        action: 'student_scan', studentId: id, qrCourseId: txt,
+                        lat: pos.coords.latitude, lng: pos.coords.longitude
                     });
-
-                    if(res && res.success) {
-                        showToast(res.msg, "success"); // Bottom message
-                        nav('screen-home');
-                    } else {
-                        showToast(res ? res.error : "Hata", "error");
-                        nav('screen-home');
-                    }
+                    if(res && res.success) { showToast(res.msg, "success"); nav('screen-home'); }
+                    else { showToast(res?res.error:"Hata", "error"); nav('screen-home'); }
                 }, (e)=> { showToast("GPS Açın!", "error"); nav('screen-home'); }, {enableHighAccuracy:true});
             });
         }
-
-        function stopScan() {
-            if(qrScanner) qrScanner.stop();
-            nav('screen-home');
-        }
+        function stopScan() { if(qrScanner) qrScanner.stop(); nav('screen-home'); }
     </script>
 </body>
 </html>
