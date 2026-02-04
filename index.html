@@ -2,65 +2,153 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Akademik Yoklama Sistemi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Akıllı Yoklama Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <style>
+        /* --- LIQUID GLASS THEME --- */
         :root {
-            --bg-dark: #121212; --glass: rgba(255, 255, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.1); --accent: #0A84FF;
-            --danger: #FF453A; --success: #30D158; --text: #ffffff;
+            --bg-1: #0f2027; --bg-2: #203a43; --bg-3: #2c5364;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --accent: #00f260; --accent-grad: linear-gradient(to right, #0575E6, #021B79);
+            --text: #ffffff;
+            --danger: #FF416C;
         }
-        body { margin: 0; background: var(--bg-dark); color: var(--text); font-family: system-ui, -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .screen { display: none; flex-direction: column; height: 100%; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .screen.active { display: flex; }
-        .center-box { justify-content: center; align-items: center; text-align: center; }
 
-        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; padding: 20px; backdrop-filter: blur(10px); width: 100%; max-width: 400px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, select { width: 100%; padding: 15px; margin-bottom: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: white; font-size: 16px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--accent); color: white; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
-        button.secondary { background: rgba(255,255,255,0.1); }
+        body {
+            margin: 0; padding: 0;
+            background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+            color: var(--text);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        /* Arkaplan Efekti (Liquid Blobs) */
+        .blob {
+            position: absolute; filter: blur(70px); z-index: -1; opacity: 0.6;
+            animation: move 10s infinite alternate;
+        }
+        .blob-1 { top: 10%; left: 10%; width: 200px; height: 200px; background: #0575E6; border-radius: 40% 60% 70% 30%; }
+        .blob-2 { bottom: 20%; right: 10%; width: 250px; height: 250px; background: #8E2DE2; border-radius: 60% 40% 30% 70%; }
+        @keyframes move { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(20px, 40px) rotate(20px); } }
+
+        /* --- UI COMPONENTS --- */
+        .screen { display: none; flex-direction: column; padding: 20px; padding-top: 60px; min-height: 100vh; box-sizing: border-box; align-items: center; }
+        .screen.active { display: flex; }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 24px;
+            padding: 30px;
+            width: 100%; max-width: 400px;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: popIn 0.4s ease;
+        }
+        @keyframes popIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+
+        h1, h2, h3 { margin: 0 0 15px 0; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
-        .admin-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; background: transparent; border: 1px solid var(--border); color: #888; border-radius: 10px; }
-        .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .tab-content { display: none; }
+        input, select {
+            width: 100%; padding: 16px; margin-bottom: 12px;
+            background: rgba(0,0,0,0.3); border: var(--glass-border); border-radius: 16px;
+            color: white; font-size: 16px; outline: none; box-sizing: border-box;
+            transition: 0.3s;
+        }
+        input:focus, select:focus { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.5); }
+
+        button {
+            width: 100%; padding: 16px; margin-top: 10px;
+            background: var(--accent-grad); border: none; border-radius: 16px;
+            color: white; font-size: 16px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;
+        }
+        button:active { transform: scale(0.97); }
+        button.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
+        button.danger { background: linear-gradient(45deg, #FF416C, #FF4B2B); }
+
+        /* --- TABS --- */
+        .tab-nav { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; color: #aaa; font-size: 14px; }
+        .tab-btn.active { background: var(--accent-grad); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .tab-content { display: none; width: 100%; max-width: 400px; }
         .tab-content.active { display: block; }
 
-        .student-row, .week-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(255,255,255,0.03); margin-bottom: 8px; border-radius: 10px; font-size: 14px; }
-        .status-pass { border-left: 3px solid var(--success); }
-        .status-fail { border-left: 3px solid var(--danger); }
-        
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; display: flex; justify-content: center; align-items: center; color: white; flex-direction: column; text-align: center; padding: 20px; }
-        .spinner { border: 4px solid rgba(255,255,255,0.3); width: 40px; height: 40px; border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite; margin-bottom: 15px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* --- COUNTDOWN & QR --- */
+        #qr-wrapper { position: relative; display: inline-block; padding: 15px; background: white; border-radius: 20px; margin-top: 20px; }
+        #qr-overlay { 
+            position: absolute; top:0; left:0; width:100%; height:100%; 
+            background: rgba(255,255,255,0.95); border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 10;
+        }
+        .countdown-circle {
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 5px solid #0575E6;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 30px; font-weight: bold; color: #0575E6;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(5, 117, 230, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(5, 117, 230, 0); } }
+
+        /* --- TOAST NOTIFICATION (BOTTOM) --- */
+        #toast-container {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; width: 90%; max-width: 350px;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+        }
+        .toast {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            color: white; padding: 16px; border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; gap: 15px;
+            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto;
+        }
+        .toast.error { border-left: 4px solid var(--danger); }
+        .toast.success { border-left: 4px solid #00f260; }
+        @keyframes slideUp { from { transform: translateY(100px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+        /* List Items */
+        .list-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; margin-bottom: 8px; font-size: 14px; }
         .hidden { display: none !important; }
+        
+        /* Static QR Modal */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; justify-content:center; align-items:center; }
     </style>
 </head>
 <body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
 
-    <div id="loader" class="hidden">
-        <div class="spinner"></div>
-        <p id="loaderMsg">İşleniyor...</p>
-        <p id="gpsDetail" style="font-size:12px; opacity:0.6; margin-top:5px;"></p>
-    </div>
+    <div id="toast-container"></div>
 
-    <div id="screen-home" class="screen active center-box">
-        <div class="card">
+    <div id="screen-home" class="screen active">
+        <div class="glass-card" style="margin-top: 10vh;">
+            <i class="fas fa-university" style="font-size: 50px; margin-bottom: 20px; background: linear-gradient(to right, #00f260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
             <h1>Akademik Yoklama</h1>
-            <button onclick="nav('screen-student-login')">Öğrenci Girişi</button>
-            <button class="secondary" onclick="nav('screen-admin-login')">Akademisyen Girişi</button>
+            <p style="opacity:0.8; margin-bottom: 30px;">Hızlı, Güvenli ve Temassız.</p>
+            
+            <button onclick="nav('screen-student-login')"><i class="fas fa-user-graduate"></i> Öğrenci Girişi</button>
+            <button class="secondary" onclick="nav('screen-admin-login')"><i class="fas fa-chalkboard-teacher"></i> Akademisyen Girişi</button>
         </div>
     </div>
 
-    <div id="screen-admin-login" class="screen center-box">
-        <div class="card">
-            <h2>Hoca Girişi</h2>
+    <div id="screen-admin-login" class="screen">
+        <div class="glass-card">
+            <h2>Akademisyen</h2>
             <input type="password" id="adminPass" placeholder="Yönetici Şifresi">
             <button onclick="adminLogin()">Giriş Yap</button>
             <button class="secondary" onclick="nav('screen-home')">Geri</button>
@@ -68,305 +156,409 @@
     </div>
 
     <div id="screen-admin-dash" class="screen">
-        <div class="admin-header">
-            <span id="courseTitle" style="font-weight:bold;">Ders Seçimi</span>
-            <button class="secondary" style="width:auto; padding:5px 15px; margin:0;" onclick="location.reload()">Çıkış</button>
+        <div style="width:100%; max-width:400px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <div id="courseTitle" style="font-weight:bold; font-size:20px;">Dersler</div>
+            <button class="secondary" style="width:auto; padding:8px 15px; margin:0; font-size:12px;" onclick="location.reload()">Çıkış</button>
         </div>
 
-        <div id="courseSelectPanel">
-            <div id="courseListContainer"></div>
-        </div>
+        <div id="courseListPanel" style="width:100%; max-width:400px;"></div>
 
-        <div id="courseDetailPanel" class="hidden">
-            <button class="secondary" onclick="backToCourses()" style="margin-bottom:15px;">&larr; Derslere Dön</button>
+        <div id="courseDetailPanel" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <button class="secondary" onclick="closeCourse()" style="width:100%; max-width:400px; margin-bottom:15px;">&larr; Derslere Dön</button>
             
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('scan')">Yoklama</button>
-                <button class="tab-btn" onclick="switchTab('list')">Liste</button>
-                <button class="tab-btn" onclick="switchTab('settings')">Ayarlar</button>
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="setTab('scan')">Yoklama</button>
+                <button class="tab-btn" onclick="setTab('list')">Liste</button>
+                <button class="tab-btn" onclick="setTab('settings')">Ayarlar</button>
             </div>
 
-            <div id="tab-scan" class="tab-content active">
-                <div class="card" style="text-align:center;">
-                    <h3>Ders Başlat</h3>
-                    <select id="activeWeekSelect" style="margin-bottom:15px;"></select>
-                    <div id="sessionStatus">
-                        <i class="fas fa-satellite-dish" style="font-size:40px; margin:20px 0; color:#555;"></i>
-                        <button onclick="startSession()">Konumu Al ve Başlat</button>
+            <div id="tab-scan" class="tab-content active glass-card">
+                <h3>Oturum Başlat</h3>
+                
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px; opacity:0.7;">Hafta Seçimi</label>
+                <select id="sessWeek"></select>
+                
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px; opacity:0.7;">Bu Oturum Kaç Saat Sayılsın?</label>
+                <select id="sessHours"></select>
+
+                <div id="scan-controls">
+                    <button onclick="startSession()"><i class="fas fa-satellite-dish"></i> Konum Al & QR Oluştur</button>
+                    <button class="secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit Karekodu Göster</button>
+                </div>
+
+                <div id="qr-area" class="hidden">
+                    <div id="qr-wrapper">
+                        <div id="qrcode"></div>
+                        <div id="qr-overlay" class="hidden">
+                            <div style="font-size:14px; color:#555; margin-bottom:10px;">Süre Doldu</div>
+                            <div style="color:#aaa; font-size:40px;"><i class="fas fa-eye-slash"></i></div>
+                        </div>
                     </div>
-                    <div id="activeQR" class="hidden" style="margin-top:20px; background:white; padding:15px; border-radius:15px; display:inline-block;"></div>
+                    
+                    <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin-top:15px;">
+                        <div class="countdown-circle" id="countdownDisplay">--</div>
+                        <div style="text-align:left; font-size:13px; opacity:0.8;">
+                            Saniye kaldı.<br>
+                            <span style="font-size:11px; opacity:0.5;">Otomatik kapanacak.</span>
+                        </div>
+                    </div>
+                    <button class="secondary" onclick="resetScanUI()" style="margin-top:15px;">Kapat / Yeni Oturum</button>
                 </div>
             </div>
 
             <div id="tab-list" class="tab-content">
-                <div id="studentListContainer"></div>
+                <div id="studentList" style="width:100%;"></div>
             </div>
 
-            <div id="tab-settings" class="tab-content">
-                <div class="card">
-                    <h3>Haftalık Plan</h3>
-                    <div id="weekConfigContainer" style="max-height:400px; overflow-y:auto;"></div>
-                    <button class="secondary" onclick="saveSettings()">Kaydet</button>
-                </div>
+            <div id="tab-settings" class="tab-content glass-card">
+                <h3>Ders Ayarları</h3>
+                
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">Haftalık Toplam Ders Saati</label>
+                <input type="number" id="setWeeklyHours">
+
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">QR Geri Sayım Süresi (Saniye)</label>
+                <input type="number" id="setQrTime" placeholder="Örn: 15">
+
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:15px 0;">
+
+                <label style="display:block; text-align:left; font-size:12px; margin-left:5px;">İlk Ders Tarihi (Otomatik Doldur)</label>
+                <input type="date" id="firstDate" onchange="autoFillDates()">
+
+                <div id="weeksConfig" style="max-height:300px; overflow-y:auto; margin-top:15px;"></div>
+                
+                <button onclick="saveSettings()">Değişiklikleri Kaydet</button>
             </div>
         </div>
     </div>
 
-    <div id="screen-student-login" class="screen center-box">
-        <div class="card">
+    <div id="screen-student-login" class="screen">
+        <div class="glass-card">
             <h2>Öğrenci Girişi</h2>
             <input type="number" id="stuId" placeholder="Öğrenci Numarası">
-            <button onclick="startStudentProcess()">Kamerayı Aç</button>
+            <button onclick="startStudentScan()"><i class="fas fa-camera"></i> Kamerayı Aç</button>
             <button class="secondary" onclick="nav('screen-home')">Geri</button>
         </div>
     </div>
 
-    <div id="screen-student-scan" class="screen center-box">
-        <div class="card">
-            <h3>Karekod Okut</h3>
-            <div id="reader" style="width:100%; border-radius:15px;"></div>
-            <button class="secondary" onclick="nav('screen-home')">İptal</button>
+    <div id="screen-student-scan" class="screen">
+        <div class="glass-card">
+            <h3>QR Okut</h3>
+            <div id="reader" style="border-radius:15px; overflow:hidden;"></div>
+            <p style="font-size:12px; opacity:0.7; margin-top:10px;">Hocanın ekranındaki kodu okutun.</p>
+            <button class="secondary" onclick="stopScan()">İptal</button>
+        </div>
+    </div>
+
+    <div id="static-qr-modal" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
+        <div class="glass-card" style="background:white; color:#333;" onclick="event.stopPropagation()">
+            <h3>Derse Giriş Kodu</h3>
+            <div id="static-qrcode"></div>
+            <p style="font-size:12px; color:#666; margin-top:10px;">Öğrenciler bu kodu okutarak sisteme girebilir.</p>
+            <button class="secondary" style="background:#eee; color:#333;" onclick="document.getElementById('static-qr-modal').classList.add('hidden')">Kapat</button>
         </div>
     </div>
 
     <script>
-        // *** BURAYA YENİ APPS SCRIPT URL'NİZİ YAPIŞTIRIN ***
-        const API_URL = "https://script.google.com/macros/s/AKfycbyLdmCMqoSFT0jcf36QlSKkg8SnwgT3N263AhqjmNkDy_5qiwgoQGGVw9ott2CY45NS/exec";
+        /* --- CONFIG --- */
+        const API_URL = "https://script.google.com/macros/s/AKfycbzYebviMya8NQ5eTnMWZZb3gjhnP-IddyFbk-aOCd0RgzNjn4AcHguBSvxil13WTp_q/exec"; // GÜNCELLEYİN
+        const SITE_URL = "https://msefagor.github.io/Yoklama/"; // Sabit QR için
 
-        let currentCourse = null;
-        let courseData = null;
-        let html5QrCode = null;
+        let currCourse = null;
+        let cData = null;
+        let qrScanner = null;
+        let countdownInt = null;
 
+        /* --- NAVIGATION & UI --- */
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        function showLoader(msg, detail="") {
-            document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('loaderMsg').innerText = msg;
-            document.getElementById('gpsDetail').innerText = detail;
-        }
-        function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
-
-        // --- GELİŞMİŞ GPS FONKSİYONU ---
-        function getPreciseLocation() {
-            return new Promise((resolve, reject) => {
-                if (!navigator.geolocation) {
-                    reject(new Error("Tarayıcı konum desteklemiyor."));
-                    return;
-                }
-
-                // GPS'in ısınması için bir süre bekleme ve en iyi sonucu alma mantığı
-                // Ancak kullanıcıyı çok bekletmemek için direkt HighAccuracy istiyoruz.
-                // 'maximumAge: 0' -> Önbellek kullanma, taze veri al.
-                // 'timeout': 15000 -> 15 sn içinde uydu bulamazsa hata ver.
-                
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        // Eğer doğruluk (accuracy) 50 metreden fazlaysa bu konum çöp olabilir.
-                        // Ancak bina içinde bazen mecbur kalırız. Uyarı verelim ama devam edelim.
-                        resolve(pos);
-                    },
-                    (err) => {
-                        reject(err);
-                    },
-                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-                );
-            });
+        function setTab(t) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-'+t).classList.add('active');
+            event.target.classList.add('active');
         }
 
-        async function apiRequest(payload) {
-            showLoader("İşleniyor...");
+        function showToast(msg, type='success') {
+            const con = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<i class="fas ${type=='success'?'fa-check-circle':'fa-exclamation-circle'}"></i> <span>${msg}</span>`;
+            con.appendChild(el);
+            setTimeout(() => { el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 4000);
+        }
+
+        /* --- API --- */
+        async function api(payload) {
+            showToast("İşleniyor...", "neutral");
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                hideLoader();
-                return data;
-            } catch (err) {
-                hideLoader();
-                alert("Bağlantı hatası veya yetki sorunu.");
+                const req = await fetch(API_URL, { method:'POST', body:JSON.stringify(payload) });
+                return await req.json();
+            } catch(e) {
+                showToast("Bağlantı Hatası!", "error");
                 return null;
             }
         }
 
-        // --- ADMIN ---
+        /* --- ADMIN FLOW --- */
         async function adminLogin() {
             const pass = document.getElementById('adminPass').value;
-            const res = await apiRequest({ action: 'admin_login', password: pass });
-            if (res && res.success) {
+            const res = await api({ action:'admin_login', password:pass });
+            
+            if(res && res.success) {
                 nav('screen-admin-dash');
-                const cont = document.getElementById('courseListContainer');
-                cont.innerHTML = "";
+                const p = document.getElementById('courseListPanel');
+                p.innerHTML = "";
                 res.courses.forEach(c => {
-                    const btn = document.createElement('button');
-                    btn.className = "secondary";
-                    btn.innerText = c.name + " (" + c.id + ")";
+                    const btn = document.createElement('div');
+                    btn.className = "glass-card";
+                    btn.style.textAlign = "left";
+                    btn.style.cursor = "pointer";
+                    btn.style.padding = "20px";
+                    btn.innerHTML = `
+                        <div style="font-size:20px; font-weight:bold;">${c.id}</div>
+                        <div style="opacity:0.8;">${c.name}</div>
+                    `;
                     btn.onclick = () => loadCourse(c.id);
-                    cont.appendChild(btn);
+                    p.appendChild(btn);
                 });
-            } else alert("Hatalı Şifre");
+            } else showToast("Hatalı Şifre", "error");
         }
 
         async function loadCourse(id) {
-            currentCourse = id;
-            const res = await apiRequest({ action: 'get_course_details', courseId: id });
-            if (res && res.success) {
-                courseData = res;
-                document.getElementById('courseSelectPanel').classList.add('hidden');
+            currCourse = id;
+            const res = await api({ action:'get_course_details', courseId:id });
+            if(res && res.success) {
+                cData = res;
+                document.getElementById('courseListPanel').classList.add('hidden');
                 document.getElementById('courseDetailPanel').classList.remove('hidden');
                 document.getElementById('courseTitle').innerText = id;
-                renderTabs();
+                
+                // Populate Settings
+                document.getElementById('setWeeklyHours').value = res.settings.weeklyHours;
+                document.getElementById('setQrTime').value = res.settings.qrTime;
+                renderWeeksConfig(res.weeks);
+
+                // Populate Scan Options
+                const weekSel = document.getElementById('sessWeek');
+                weekSel.innerHTML = "";
+                res.weeks.forEach(w => {
+                    if(w.type === 'Normal') {
+                        const opt = document.createElement('option');
+                        opt.value = w.weekNo;
+                        opt.text = `${w.weekNo}. Hafta (${w.date})`;
+                        weekSel.add(opt);
+                    }
+                });
+
+                // Populate Hours Dropdown (1 to WeeklyHours)
+                const hrSel = document.getElementById('sessHours');
+                hrSel.innerHTML = "";
+                for(let i=1; i<=res.settings.weeklyHours; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.text = i + " Saat";
+                    if(i === parseInt(res.settings.weeklyHours)) opt.selected = true; // Default max
+                    hrSel.add(opt);
+                }
+
+                renderStudentList(res.students);
+                setTab('scan');
             }
         }
 
-        function renderTabs() {
-            // Settings
-            const weekCont = document.getElementById('weekConfigContainer');
-            const selectWeek = document.getElementById('activeWeekSelect');
-            weekCont.innerHTML = "";
-            selectWeek.innerHTML = "";
-            
-            courseData.weeks.forEach(w => {
-                if(w.type === 'Normal') {
-                    const opt = document.createElement('option');
-                    opt.value = w.weekNo;
-                    opt.innerText = `${w.weekNo}. Hafta`;
-                    selectWeek.appendChild(opt);
-                }
+        function closeCourse() {
+            document.getElementById('courseListPanel').classList.remove('hidden');
+            document.getElementById('courseDetailPanel').classList.add('hidden');
+            document.getElementById('courseTitle').innerText = "Dersler";
+        }
 
-                // GÜNCELLEME: Bütünleme seçeneği eklendi
+        /* --- SETTINGS & DATES --- */
+        function renderWeeksConfig(weeks) {
+            const div = document.getElementById('weeksConfig');
+            div.innerHTML = "";
+            weeks.forEach(w => {
                 const row = document.createElement('div');
-                row.className = "week-row";
+                row.className = "list-item";
                 row.innerHTML = `
-                    <span>Hafta ${w.weekNo}</span>
-                    <input type="text" class="week-input" value="${w.date}" style="width:80px;" id="date-${w.weekNo}">
-                    <select class="week-input" id="type-${w.weekNo}" style="width:100px;">
-                        <option value="Normal" ${w.type=='Normal'?'selected':''}>Normal</option>
+                    <div style="width:60px;">Hafta ${w.weekNo}</div>
+                    <input type="date" id="d-${w.weekNo}" value="${convertDate(w.date)}" style="width:110px; margin:0; font-size:12px;">
+                    <select id="t-${w.weekNo}" style="width:90px; margin:0; font-size:12px;">
+                        <option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option>
                         <option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option>
                         <option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option>
                         <option value="Final" ${w.type=='Final'?'selected':''}>Final</option>
-                        <option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Bütünleme</option>
+                        <option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option>
                     </select>
                 `;
-                weekCont.appendChild(row);
+                div.appendChild(row);
             });
+        }
 
-            // List
-            const listCont = document.getElementById('studentListContainer');
-            listCont.innerHTML = "";
-            courseData.students.sort((a,b) => a.remaining - b.remaining).forEach(s => {
-                const div = document.createElement('div');
-                div.className = `student-row ${s.remaining < 0 ? 'status-fail' : 'status-pass'}`;
-                div.innerHTML = `<div><b>${s.name}</b><br><small>${s.id}</small></div>
-                                 <div style="text-align:right;"><b>${s.remaining < 0 ? 'KALDI' : s.remaining + ' Hak'}</b><br><small>Devamsız: ${s.absent}</small></div>`;
-                listCont.appendChild(div);
+        // DD.MM.YYYY -> YYYY-MM-DD (Input için)
+        function convertDate(str) {
+            if(!str) return "";
+            const p = str.split(".");
+            return `${p[2]}-${p[1]}-${p[0]}`;
+        }
+
+        // YYYY-MM-DD -> DD.MM.YYYY (Kaydetmek için)
+        function toTRDate(str) {
+             if(!str) return "";
+             const p = str.split("-");
+             return `${p[2]}.${p[1]}.${p[0]}`;
+        }
+
+        function autoFillDates() {
+            let curr = new Date(document.getElementById('firstDate').value);
+            if(isNaN(curr.getTime())) return;
+
+            cData.weeks.forEach(w => {
+                const inp = document.getElementById(`d-${w.weekNo}`);
+                if(inp) {
+                    inp.value = curr.toISOString().split('T')[0];
+                }
+                curr.setDate(curr.getDate() + 7); // +1 Hafta
             });
         }
 
         async function saveSettings() {
             const weeks = [];
-            courseData.weeks.forEach(w => {
+            cData.weeks.forEach(w => {
+                const dVal = document.getElementById(`d-${w.weekNo}`).value;
                 weeks.push({
                     weekNo: w.weekNo,
-                    date: document.getElementById(`date-${w.weekNo}`).value,
-                    type: document.getElementById(`type-${w.weekNo}`).value
+                    date: dVal, // YYYY-MM-DD olarak gidecek, backend formatlayabilir veya string tutar
+                    type: document.getElementById(`t-${w.weekNo}`).value
                 });
             });
-            const res = await apiRequest({ action: 'save_settings', courseId: currentCourse, weeks: weeks });
-            if(res && res.success) { alert("Kaydedildi"); loadCourse(currentCourse); }
+
+            const res = await api({
+                action: 'save_settings',
+                courseId: currCourse,
+                weeklyHours: document.getElementById('setWeeklyHours').value,
+                qrTime: document.getElementById('setQrTime').value,
+                weeks: weeks
+            });
+
+            if(res && res.success) { showToast("Ayarlar Kaydedildi"); loadCourse(currCourse); }
         }
 
-        function backToCourses() {
-            document.getElementById('courseSelectPanel').classList.remove('hidden');
-            document.getElementById('courseDetailPanel').classList.add('hidden');
-            stopSession();
+        function renderStudentList(list) {
+            const div = document.getElementById('studentList');
+            div.innerHTML = "";
+            list.sort((a,b)=>a.remaining-b.remaining).forEach(s => {
+                const row = document.createElement('div');
+                row.className = "list-item";
+                row.style.borderLeft = s.remaining < 0 ? "4px solid var(--danger)" : "4px solid #00f260";
+                row.innerHTML = `
+                    <div><div style="font-weight:bold;">${s.name}</div><div style="font-size:11px; opacity:0.6;">${s.id}</div></div>
+                    <div style="text-align:right;">
+                        <div style="font-weight:bold; color:${s.remaining<0?'#FF416C':'#00f260'}">${s.remaining<0?'KALDI':s.remaining+' Hak'}</div>
+                        <div style="font-size:11px;">Devamsız: ${s.absent}s</div>
+                    </div>
+                `;
+                div.appendChild(row);
+            });
         }
 
-        // --- SESSION ---
+        /* --- SESSION & TIMER --- */
         async function startSession() {
-            const weekNo = document.getElementById('activeWeekSelect').value;
-            if(!weekNo) return alert("Hafta seçiniz");
-
-            showLoader("GPS Uydularına Bağlanılıyor...", "Lütfen bekleyiniz, hassas konum alınıyor.");
+            const wk = document.getElementById('sessWeek').value;
+            const hrs = document.getElementById('sessHours').value;
             
-            try {
-                const pos = await getPreciseLocation();
-                const acc = Math.round(pos.coords.accuracy);
-                
-                showLoader("Konum Alındı (" + acc + "m hata payı)", "Sunucuya gönderiliyor...");
-
-                const res = await apiRequest({
+            showToast("Konum alınıyor...");
+            
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const res = await api({
                     action: 'start_session',
-                    courseId: currentCourse,
-                    weekNo: weekNo,
+                    courseId: currCourse,
+                    weekNo: wk,
+                    hoursVal: hrs,
                     lat: pos.coords.latitude,
                     lng: pos.coords.longitude
                 });
-                
+
                 if(res && res.success) {
-                    document.getElementById('sessionStatus').classList.add('hidden');
-                    const qrBox = document.getElementById('activeQR');
-                    qrBox.classList.remove('hidden');
-                    qrBox.innerHTML = "";
-                    new QRCode(qrBox, { text: currentCourse, width: 220, height: 220 });
-                    alert("Ders Başlatıldı!\nGPS Hassasiyeti: " + acc + " metre.\n\nÖğrenciler şimdi okutabilir.");
+                    document.getElementById('scan-controls').classList.add('hidden');
+                    document.getElementById('qr-area').classList.remove('hidden');
+                    
+                    // QR Generate
+                    const qrEl = document.getElementById('qrcode');
+                    qrEl.innerHTML = "";
+                    new QRCode(qrEl, { text: currCourse, width:200, height:200 });
+
+                    // Timer Start
+                    let duration = parseInt(document.getElementById('setQrTime').value) || 15;
+                    const display = document.getElementById('countdownDisplay');
+                    const overlay = document.getElementById('qr-overlay');
+                    overlay.classList.add('hidden'); // Reset overlay
+
+                    if(countdownInt) clearInterval(countdownInt);
+                    
+                    display.innerText = duration;
+                    countdownInt = setInterval(() => {
+                        duration--;
+                        display.innerText = duration;
+                        if(duration <= 0) {
+                            clearInterval(countdownInt);
+                            overlay.classList.remove('hidden'); // Hide QR
+                        }
+                    }, 1000);
                 }
-            } catch (e) {
-                hideLoader();
-                alert("GPS Hatası: " + e.message + "\nLütfen açık alana çıkın veya Wi-Fi açın.");
-            }
+            }, (e) => showToast("GPS Hatası: "+e.message, "error"), {enableHighAccuracy:true});
         }
 
-        function stopSession() {
-            document.getElementById('sessionStatus').classList.remove('hidden');
-            document.getElementById('activeQR').classList.add('hidden');
+        function resetScanUI() {
+            if(countdownInt) clearInterval(countdownInt);
+            document.getElementById('qr-area').classList.add('hidden');
+            document.getElementById('scan-controls').classList.remove('hidden');
         }
 
-        // --- STUDENT ---
-        function startStudentProcess() {
+        function showStaticQR() {
+            const modal = document.getElementById('static-qr-modal');
+            const con = document.getElementById('static-qrcode');
+            con.innerHTML = "";
+            new QRCode(con, { text: SITE_URL, width:200, height:200 });
+            modal.classList.remove('hidden');
+        }
+
+        /* --- STUDENT --- */
+        function startStudentScan() {
             const id = document.getElementById('stuId').value;
-            if(!id) return alert("No giriniz");
+            if(!id) return showToast("Öğrenci No girin!", "error");
             
             nav('screen-student-scan');
-            html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, async (decodedText) => {
-                html5QrCode.stop();
+            qrScanner = new Html5Qrcode("reader");
+            qrScanner.start({ facingMode: "environment" }, { fps:10, qrbox:250 }, async (txt) => {
+                qrScanner.stop();
+                showToast("Konum gönderiliyor...");
                 
-                showLoader("Hassas Konumunuz Alınıyor...", "Lütfen telefonu sabit tutun.");
-                
-                try {
-                    const pos = await getPreciseLocation();
-                    const acc = Math.round(pos.coords.accuracy);
-
-                    if(acc > 50) {
-                        if(!confirm("GPS Sinyaliniz zayıf ("+acc+"m hata payı).\nYine de göndermek istiyor musunuz?\n(Hocadan uzak görünebilirsiniz)")) {
-                            hideLoader(); nav('screen-home'); return;
-                        }
-                    }
-
-                    showLoader("Konum: " + acc + "m doğruluk", "Sunucu kontrol ediyor...");
-
-                    const res = await apiRequest({
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const res = await api({
                         action: 'student_scan',
                         studentId: id,
-                        qrCourseId: decodedText,
+                        qrCourseId: txt,
                         lat: pos.coords.latitude,
                         lng: pos.coords.longitude
                     });
 
-                    alert(res.success ? res.msg : "HATA: " + res.error);
-                    nav('screen-home');
-
-                } catch (e) {
-                    hideLoader();
-                    alert("GPS alınamadı: " + e.message);
-                    nav('screen-home');
-                }
+                    if(res && res.success) {
+                        showToast(res.msg, "success"); // Bottom message
+                        nav('screen-home');
+                    } else {
+                        showToast(res ? res.error : "Hata", "error");
+                        nav('screen-home');
+                    }
+                }, (e)=> { showToast("GPS Açın!", "error"); nav('screen-home'); }, {enableHighAccuracy:true});
             });
+        }
+
+        function stopScan() {
+            if(qrScanner) qrScanner.stop();
+            nav('screen-home');
         }
     </script>
 </body>
