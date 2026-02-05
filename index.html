@@ -28,44 +28,95 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            backdrop-filter: blur(10px); animation: fadeIn 0.3s;
+            backdrop-filter: blur(15px); animation: fadeIn 0.3s;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* DYNAMIC SESSION LAYOUT */
+        /* --- DYNAMIC SESSION LAYOUT (PC OPTIMIZED) --- */
         .fs-session-container {
-            display: flex; flex-direction: column; width: 100%; height: 100%; padding: 20px; box-sizing: border-box;
+            display: flex; flex-direction: row; /* YANYANA */
+            width: 100%; height: 100%; padding: 40px; box-sizing: border-box;
+            gap: 40px; /* Boşluk */
         }
-        .fs-qr-area {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            position: relative;
-        }
+        
+        /* SOL TARAF: LİSTE */
         .fs-list-area {
-            flex: 1; background: rgba(255,255,255,0.05); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            overflow-y: auto; padding: 15px; margin-top: 10px;
+            flex: 0 0 350px; /* Sabit Genişlik */
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 20px;
+            display: flex; flex-direction: column;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .fs-list-header {
+            font-size: 20px; font-weight: bold; margin-bottom: 20px; 
+            padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: #00f260;
+        }
+        .fs-list-content {
+            flex: 1; overflow-y: auto; 
         }
         .live-student-item {
-            display: flex; justify-content: space-between; padding: 10px; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px;
-            animation: slideInLeft 0.3s;
+            background: rgba(255,255,255,0.08);
+            margin-bottom: 10px; padding: 15px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            animation: slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        @keyframes slideInLeft { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes slideInLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
 
-        /* QR COVER */
+        /* SAĞ TARAF: KAREKOD */
+        .fs-qr-area {
+            flex: 1; /* Kalan tüm alan */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+        #qrcode img {
+            width: 100% !important; height: auto !important; /* Responsive ama büyük */
+            max-width: 65vh; /* Yüksekliğe göre sınırla */
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 242, 96, 0.2);
+            border: 10px solid white;
+        }
+        
         .qr-cover {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9); backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border-radius: 30px; color: #333; z-index: 10;
+            border-radius: 30px; color: white; z-index: 10;
         }
 
-        /* LOADER */
+        /* WEEK ITEMS STYLING */
+        .week-item { 
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; 
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; 
+            cursor: pointer; border: 1px solid transparent; transition: 0.2s; position: relative; 
+        }
+        .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
+        
+        /* PASİF HAFTA STİLİ */
+        .week-item.locked { 
+            opacity: 0.5; /* Daha sönük */
+            background: rgba(0,0,0,0.2); /* Daha koyu */
+            border-color: rgba(255,255,255,0.05);
+        }
+        .week-item.unlocked-past {
+            opacity: 1;
+            background: rgba(255, 206, 86, 0.1); /* Hafif sarımsı, düzenlenebilir */
+            border-color: rgba(255, 206, 86, 0.5);
+        }
+
+        /* --- GENERIC UI --- */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); z-index: 10000; display: flex; justify-content: center; align-items: center; }
         .loader-content { text-align: center; }
         .spinner { width: 60px; height: 60px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.1); border-top-color: #00f260; border-right-color: #0575E6; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* UI ELEMENTS */
         .screen { display: none; flex-direction: column; padding: 20px; padding-top: 60px; min-height: 100vh; box-sizing: border-box; align-items: center; padding-bottom: 80px; }
         .screen.active { display: flex; }
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); border: var(--glass-border); border-radius: 30px; padding: 30px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
@@ -74,23 +125,10 @@
 
         input, select { width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; font-size: 15px; outline: none; box-sizing: border-box; text-align: center; }
         .input-label { font-size: 12px; opacity: 0.7; margin-left: 10px; margin-bottom: 5px; display: block; text-align: left; }
-        
         .main-btn, .action-btn { width: 100%; padding: 18px; border-radius: 20px; border: none; color: white; font-size: 18px; font-weight: 700; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
         .main-btn { display: flex; align-items: center; justify-content: center; gap: 15px; background: linear-gradient(135deg, #667eea, #764ba2); }
         .action-btn { background: var(--accent-grad); }
         .secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
-
-        /* WEEK ITEMS */
-        .week-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; position: relative; }
-        .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
-        .week-item.locked { opacity: 0.6; }
-        
-        /* WEEK ATTENDEES LIST (STATIC VIEW) */
-        #week-attendees-list {
-            margin-top: 15px; text-align: left; max-height: 200px; overflow-y: auto;
-            background: rgba(0,0,0,0.2); border-radius: 15px; padding: 10px;
-        }
-        .attendee-row { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; display: flex; justify-content: space-between; }
 
         .credits-box { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 20px; background: rgba(0,0,0,0.3); border-radius: 50px; font-size: 12px; color: rgba(255,255,255,0.7); backdrop-filter: blur(5px); z-index: 100; }
         .credits-name { color: #00f260; font-weight: 700; }
@@ -98,7 +136,6 @@
         .toast { background: rgba(0,0,0,0.8); color: white; padding: 15px; border-radius: 15px; margin-top: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); pointer-events: auto; }
         .hidden { display: none !important; }
 
-        /* COURSE LIST STYLES */
         .course-item { display: flex; align-items: center; justify-content: space-between; padding: 20px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); }
         .course-item:nth-child(4n+1) { background: linear-gradient(135deg, rgba(5, 117, 230, 0.3), rgba(2, 27, 121, 0.3)); }
         .course-item:nth-child(4n+2) { background: linear-gradient(135deg, rgba(0, 242, 96, 0.3), rgba(5, 117, 230, 0.3)); }
@@ -107,7 +144,6 @@
         .c-name { font-size: 16px; font-weight: 600; text-align: left; flex: 1; }
         .c-code { font-size: 14px; font-weight: 700; opacity: 0.8; text-align: right; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 10px; }
 
-        /* HEADER ICONS */
         .admin-header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .header-icon-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); width: 45px; height: 45px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; cursor: pointer; transition: 0.2s; backdrop-filter: blur(10px); }
         .header-title { font-size: 20px; font-weight: 800; background: linear-gradient(to right, #fff, #a1c4fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -130,6 +166,9 @@
         .tab-content { display: none; } .tab-content.active { display: block; }
         .week-row-glass { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
         .week-row-glass input, .week-row-glass select { margin: 0; padding: 10px; font-size: 13px; background: rgba(0,0,0,0.2); border: none; }
+        
+        /* BOTTOM LIST */
+        #week-attendees-container { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; }
     </style>
 </head>
 <body>
@@ -156,25 +195,26 @@
 
     <div id="fs-dynamic-session" class="fullscreen-overlay hidden">
         <div class="fs-session-container">
+            <div class="fs-list-area">
+                <div class="fs-list-header"><i class="fas fa-users"></i> Anlık Katılım</div>
+                <div id="live-student-list" class="fs-list-content">
+                    </div>
+            </div>
+
             <div class="fs-qr-area">
                 <div style="position:relative;">
-                    <div style="background:white; padding:20px; border-radius:30px; display:inline-block;">
-                        <div id="qrcode"></div>
-                    </div>
+                    <div id="qrcode"></div>
                     <div id="qr-cover" class="qr-cover hidden">
-                        <i class="fas fa-eye-slash" style="font-size:50px; margin-bottom:10px;"></i>
-                        <h3 style="margin:0;">Süre Doldu</h3>
+                        <i class="fas fa-eye-slash" style="font-size:80px; margin-bottom:20px; color:#FF416C;"></i>
+                        <h2 style="margin:0;">Süre Doldu</h2>
+                        <p>Liste güncellenmeye devam ediyor...</p>
                     </div>
                 </div>
                 
-                <div id="countdownDisplay" style="font-size:60px; font-weight:800; color:#00f260; margin-top:20px;">--</div>
-                <p style="font-size:16px; opacity:0.8;">Saniye Kaldı</p>
-                <button class="action-btn secondary" style="width:200px;" onclick="resetScanUI()">Oturumu Kapat</button>
-            </div>
-
-            <div class="fs-list-area">
-                <h4 style="margin:0 0 10px 0; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px;">Derse Katılanlar</h4>
-                <div id="live-student-list"></div>
+                <div id="countdownDisplay" style="font-size:100px; font-weight:800; color:#00f260; margin-top:20px; text-shadow: 0 0 30px rgba(0,242,96,0.5);">--</div>
+                <p style="font-size:20px; opacity:0.8; font-weight:bold;">Saniye Kaldı</p>
+                
+                <button class="action-btn secondary" style="width:250px; background:rgba(255,65,108,0.2); border:1px solid rgba(255,65,108,0.5);" onclick="resetScanUI()">OTURUMU KAPAT</button>
             </div>
         </div>
     </div>
@@ -182,6 +222,7 @@
     <div id="fs-manual-add" class="fullscreen-overlay hidden">
         <div class="glass-card" style="width:90%; max-width:500px; max-height:80vh; overflow-y:auto;">
             <h3>Manuel Ekleme</h3>
+            <p style="opacity:0.7; font-size:12px;">Geçmiş hafta için öğrenci seçin:</p>
             <div id="manual-student-list" style="text-align:left;"></div>
             <button class="action-btn secondary" onclick="document.getElementById('fs-manual-add').classList.add('hidden')">Kapat</button>
         </div>
@@ -243,16 +284,18 @@
                     <h3>Oturum Başlat</h3>
                     <div id="weeks-list-container" style="max-height:300px; overflow-y:auto; margin-bottom:15px;"></div>
                     
-                    <div id="week-detail-view" class="hidden">
-                        <label class="input-label">Bu Hafta Katılanlar (Numara Sıralı)</label>
-                        <div id="week-attendees-list"></div>
-                    </div>
-
                     <div id="session-controls" class="hidden" style="margin-top:15px;">
                         <label class="input-label">Bu oturum kaç saat sayılsın?</label>
                         <select id="sessHours"></select>
                         <button class="action-btn" onclick="startSession()"><i class="fas fa-satellite-dish"></i> Başlat (Tam Ekran)</button>
                         <button class="action-btn secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit Karekod</button>
+                    </div>
+
+                    <div id="week-detail-view" class="hidden">
+                        <div id="week-attendees-container">
+                            <label class="input-label" style="text-align:center; margin-bottom:10px;">📋 Bu Hafta Katılanlar</label>
+                            <div id="week-attendees-list" style="text-align:left; max-height:200px; overflow-y:auto;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -389,40 +432,44 @@
                 const isUnlocked = unlockedWeeks.includes(w.weekNo);
                 const lockedState = isPast && !isUnlocked;
 
-                el.className = `week-item ${lockedState ? 'locked' : ''}`;
+                el.className = `week-item ${lockedState ? 'locked' : (isUnlocked ? 'unlocked-past' : '')}`;
+                
+                let icon = '<i class="fas fa-chevron-right"></i>';
+                if(lockedState) icon = '<i class="fas fa-lock" style="color:#FF416C"></i>';
+                else if(isUnlocked) icon = '<i class="fas fa-user-plus" style="color:#00f260; font-size:18px;"></i> <span style="font-size:12px; margin-left:5px;">Ekle</span>';
+
                 el.innerHTML = `
                     <div style="text-align:left;">
                         <div style="font-weight:bold;">${w.weekNo}. Hafta</div>
                         <div style="font-size:12px; opacity:0.6;">${w.date||'Tarih Yok'}</div>
                     </div>
-                    <div>
-                        ${lockedState ? '<i class="fas fa-lock" style="color:#FF416C;"></i>' : 
-                          isPast ? '<i class="fas fa-unlock" style="color:#00f260;"></i>' : '<i class="fas fa-chevron-right"></i>'}
-                    </div>
+                    <div>${icon}</div>
                 `;
 
                 el.onclick = async () => {
-                    // SELECTION LOGIC
+                    // 1. UNLOCK LOGIC
+                    if(lockedState) {
+                        const p = prompt("Kilit Şifresi:");
+                        if(p === realAdminPass) { unlockedWeeks.push(w.weekNo); renderWeeksList(weeks); } 
+                        else alert("Hatalı Şifre");
+                        return;
+                    }
+
+                    // 2. MANUAL ADD LOGIC
+                    if(isUnlocked) {
+                        openManualAdd(w.weekNo);
+                        return;
+                    }
+
+                    // 3. NORMAL SELECTION LOGIC
                     document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
                     el.classList.add('active');
                     selectedWeekNo = w.weekNo;
 
-                    // 1. FETCH & SHOW ATTENDEES FOR THIS WEEK
                     document.getElementById('week-detail-view').classList.remove('hidden');
                     loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
 
-                    // 2. CHECK LOCK STATE FOR ACTIONS
-                    if(lockedState) {
-                        const p = prompt("Hafta kilidini açmak için şifre:");
-                        if(p === realAdminPass) { 
-                            unlockedWeeks.push(w.weekNo); 
-                            renderWeeksList(weeks); 
-                            // Unlock and show manual add
-                            openManualAdd(w.weekNo);
-                        } else alert("Hatalı Şifre");
-                    } else if(isPast) {
-                        openManualAdd(w.weekNo);
-                    } else {
+                    if(!isPast) {
                         document.getElementById('session-controls').classList.remove('hidden');
                         updateHoursDropdown(w);
                     }
@@ -434,22 +481,16 @@
         async function loadWeekAttendees(cId, wNo, containerId) {
             const cont = document.getElementById(containerId);
             cont.innerHTML = "<div style='text-align:center; opacity:0.5;'>Yükleniyor...</div>";
-            
-            // Backend'den çekme işlemi
-            // Hız için apiRequest kullanıyoruz ama loader göstermeden (silent)
             try {
                 const req = await fetch(API_URL, {method:'POST', body:JSON.stringify({action:'get_week_logs', courseId:cId, weekNo:wNo})});
                 const res = await req.json();
-                
                 if(res.success) {
                     cont.innerHTML = "";
                     if(res.logs.length === 0) cont.innerHTML = "<div style='opacity:0.5; font-size:12px;'>Kayıt yok.</div>";
-                    // Numara Sıralı
                     res.logs.sort((a,b)=>a.studentId - b.studentId);
-                    
                     res.logs.forEach(l => {
                         const row = document.createElement('div');
-                        row.className = "attendee-row";
+                        row.style.cssText = "display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:13px;";
                         row.innerHTML = `<span><b>${l.studentId}</b> ${l.name}</span><span>${l.hours} Saat</span>`;
                         cont.appendChild(row);
                     });
@@ -484,22 +525,22 @@
             else { for(let i=1; i<=rem; i++) { const opt = document.createElement('option'); opt.value=i; opt.text=i+" Saat"; if(i===rem) opt.selected=true; hSel.add(opt); } }
         }
 
-        // FULLSCREEN SESSION & LIVE LIST
+        // FULLSCREEN SESSION
         async function startSession() {
             if(!selectedWeekNo) return showToast("Hafta seçiniz");
             const hrs = document.getElementById('sessHours').value;
             if(isNaN(hrs)) return showToast("Tamamlanmış");
 
-            showLoader("GPS Alınıyor...");
+            showLoader("Oturum Açılıyor...");
             navigator.geolocation.getCurrentPosition(async (pos)=>{
                 const res=await api({action:'start_session', courseId:currCourse, weekNo:selectedWeekNo, hoursVal:hrs, lat:pos.coords.latitude, lng:pos.coords.longitude});
                 if(res&&res.success) {
                     const overlay = document.getElementById('fs-dynamic-session');
                     overlay.classList.remove('hidden');
-                    document.getElementById('qr-cover').classList.add('hidden'); // Ensure cover is hidden initially
+                    document.getElementById('qr-cover').classList.add('hidden');
                     
                     const q=document.getElementById('qrcode'); q.innerHTML=""; 
-                    new QRCode(q, {text:currCourse, width:300, height:300});
+                    new QRCode(q, {text:currCourse, width:500, height:500}); // HUGE QR
                     
                     let dur=parseInt(document.getElementById('setQrTime').value)||15; 
                     const disp=document.getElementById('countdownDisplay');
@@ -511,15 +552,14 @@
                         dur--; disp.innerText=dur; 
                         if(dur<=0){ 
                             clearInterval(countdownInt); 
-                            // Cover QR
                             document.getElementById('qr-cover').classList.remove('hidden');
                         } 
                     }, 1000);
 
-                    // LIVE LIST POLLING
+                    // LIVE LIST
                     if(liveListInt) clearInterval(liveListInt);
-                    updateLiveList(); // First call
-                    liveListInt = setInterval(updateLiveList, 3000); // Every 3 sec
+                    updateLiveList();
+                    liveListInt = setInterval(updateLiveList, 3000);
                 }
             },()=>{hideLoader(); showToast("GPS Hatası");},{enableHighAccuracy:true});
         }
@@ -534,13 +574,9 @@
                 const res = await req.json();
                 if(res.success) {
                     listContainer.innerHTML = "";
-                    // Sort by Time Descending (Newest first) as requested
-                    // Note: Backend sorts by ID for the static view, so we resort here or use backend data if it sends time.
-                    // The backend code provided sends sorted by time DESC.
                     res.logs.forEach(l => {
                         const div = document.createElement('div');
                         div.className = "live-student-item";
-                        // Time formatting
                         const t = new Date(l.time);
                         const timeStr = t.getHours() + ":" + (t.getMinutes()<10?'0':'') + t.getMinutes();
                         div.innerHTML = `<span>${l.name}</span><span style="opacity:0.6;">${timeStr}</span>`;
@@ -556,13 +592,9 @@
             document.getElementById('fs-dynamic-session').classList.add('hidden'); 
             loadCourse(currCourse);
         }
-        function showStaticQR() { 
-            document.getElementById('fs-static-qr').classList.remove('hidden'); 
-            const d = document.getElementById('static-qrcode'); d.innerHTML=""; 
-            new QRCode(d, {text:SITE_URL, width:300, height:300});
-        }
+        function showStaticQR() { document.getElementById('fs-static-qr').classList.remove('hidden'); const d = document.getElementById('static-qrcode'); d.innerHTML=""; new QRCode(d, {text:SITE_URL, width:300, height:300}); }
 
-        // ... (STUDENT & SETTINGS FUNCTIONS REMAIN THE SAME AS PREVIOUS) ...
+        /* STUDENT */
         async function checkStudentName() {
             const id = document.getElementById('stuId').value; if(!id) return showToast("Numara giriniz");
             const res = await api({ action: 'get_student_name', studentId: id });
@@ -636,7 +668,12 @@
         }
         async function saveSettings() {
             const weeks=[]; cData.weeks.forEach(w=>{ weeks.push({weekNo:w.weekNo, date:document.getElementById(`d-${w.weekNo}`).value, type:document.getElementById(`t-${w.weekNo}`).value})});
-            const res=await api({action:'save_settings', courseId:currCourse, limitPct:document.getElementById('setLimitPct').value, weeklyHours:document.getElementById('setWeeklyHours').value, qrTime:document.getElementById('setQrTime').value, weeks:weeks});
+            const res=await api({
+                action:'save_settings', courseId:currCourse, 
+                limitPct: document.getElementById('setLimitPct').value,
+                weeklyHours:document.getElementById('setWeeklyHours').value, 
+                qrTime:document.getElementById('setQrTime').value, weeks:weeks
+            });
             if(res && res.success) { showToast("Kaydedildi"); loadCourse(currCourse); }
         }
         function autoFillDates(){
