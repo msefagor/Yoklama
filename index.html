@@ -23,7 +23,21 @@
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
         @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
-        /* FULLSCREEN OVERLAY (MODAL) */
+        /* HEADER ICONS */
+        .admin-header {
+            width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+        .header-icon-btn {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            width: 45px; height: 45px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 18px; cursor: pointer; transition: 0.2s;
+            backdrop-filter: blur(10px);
+        }
+        .header-icon-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+        .header-title { font-size: 20px; font-weight: 800; background: linear-gradient(to right, #fff, #a1c4fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* FULLSCREEN MODALS */
         .fullscreen-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 9999;
@@ -32,7 +46,6 @@
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* LOADER */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px);
@@ -46,21 +59,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* BANNER */
-        .glass-banner {
-            width: 100%; max-width: 400px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 25px;
-            padding: 30px 20px; margin-bottom: 30px; text-align: center;
-            backdrop-filter: blur(10px);
-        }
-        .banner-title {
-            font-size: 36px; font-weight: 800;
-            background: linear-gradient(to right, #00f260, #0575E6);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin: 0;
-        }
-
         /* UI ELEMENTS */
         .screen { display: none; flex-direction: column; padding: 20px; padding-top: 60px; min-height: 100vh; box-sizing: border-box; align-items: center; padding-bottom: 80px; }
         .screen.active { display: flex; }
@@ -71,11 +69,28 @@
             text-align: center; margin-bottom: 20px;
         }
 
-        input, select {
-            width: 100%; padding: 18px; margin-bottom: 15px;
-            background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px; color: white; font-size: 16px; outline: none; box-sizing: border-box; text-align: center;
+        .glass-banner {
+            width: 100%; max-width: 400px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 25px;
+            padding: 30px 20px; margin-bottom: 30px; text-align: center;
+            backdrop-filter: blur(10px);
         }
+        .banner-title {
+            font-size: 36px; font-weight: 800;
+            background: linear-gradient(to right, #00f260, #0575E6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;
+        }
+
+        input, select {
+            width: 100%; padding: 15px; margin-bottom: 15px;
+            background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; color: white; font-size: 15px; outline: none; box-sizing: border-box; text-align: center;
+        }
+        
+        /* SETTINGS LABELS */
+        .input-group { text-align: left; margin-bottom: 5px; width: 100%; }
+        .input-label { font-size: 12px; opacity: 0.7; margin-left: 10px; margin-bottom: 5px; display: block; }
 
         .main-btn, .action-btn {
             width: 100%; padding: 18px; border-radius: 20px; border: none; color: white;
@@ -86,15 +101,14 @@
         .action-btn { background: var(--accent-grad); }
         .secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
         
-        /* WEEK LIST ITEMS */
         .week-item {
             background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px;
             margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
             cursor: pointer; border: 1px solid transparent; transition: 0.2s;
         }
         .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
-        .week-item.locked { opacity: 0.5; cursor: not-allowed; }
-        .week-item.locked i { color: #FF416C; }
+        .week-item.locked { opacity: 0.6; }
+        .week-item .lock-btn { padding: 5px 10px; background: rgba(0,0,0,0.2); border-radius: 8px; font-size: 12px; }
 
         .credits-box {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -108,18 +122,33 @@
         .toast { background: rgba(0,0,0,0.8); color: white; padding: 15px; border-radius: 15px; margin-top: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); pointer-events: auto; }
         .hidden { display: none !important; }
         
-        /* STUDENT STATS */
+        /* STUDENT STATS & CHECKBOX */
         .stat-card { padding: 20px; border-radius: 20px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.2); }
         .stat-val { font-size: 32px; font-weight: 800; display: block; margin: 10px 0; }
         .stat-green { background: rgba(0, 242, 96, 0.2); color: #00f260; border-color: #00f260; }
         .stat-red { background: rgba(255, 65, 108, 0.2); color: #FF416C; border-color: #FF416C; }
         .stat-yellow { background: rgba(255, 206, 86, 0.2); color: #FFCE56; border-color: #FFCE56; }
+
+        .confirm-box {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+            padding: 15px; border-radius: 20px; margin: 20px auto; width: fit-content;
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
+        }
+        .custom-checkbox {
+            width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.5); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .custom-checkbox.checked { background: #00f260; border-color: #00f260; }
         
-        /* TABS */
         .tab-nav { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ddd; border:none; cursor: pointer; }
         .tab-btn.active { background: var(--accent-grad); color: white; }
         .tab-content { display: none; } .tab-content.active { display: block; }
+        
+        .manual-list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 <body>
@@ -150,18 +179,25 @@
             <div style="background:white; padding:20px; border-radius:30px; display:inline-block;">
                 <div id="qrcode"></div>
             </div>
-            <div id="countdownDisplay" style="font-size:80px; font-weight:800; color:#00f260; margin-top:20px; text-shadow:0 0 20px rgba(0,242,96,0.5);">--</div>
+            <div id="countdownDisplay" style="font-size:80px; font-weight:800; color:#00f260; margin-top:20px;">--</div>
             <p style="font-size:18px; opacity:0.8;">Saniye Kaldı</p>
             <button class="action-btn secondary" onclick="resetScanUI()">Oturumu Kapat</button>
         </div>
     </div>
 
-    <div id="fs-student-result" class="fullscreen-overlay hidden">
-        <div id="stu-res-card" class="glass-card">
-            </div>
-        <button class="action-btn" style="width:200px;" onclick="document.getElementById('fs-student-result').classList.add('hidden'); nav('screen-home');">Tamam</button>
+    <div id="fs-manual-add" class="fullscreen-overlay hidden">
+        <div class="glass-card" style="width:90%; max-width:500px; max-height:80vh; overflow-y:auto;">
+            <h3>Manuel Ekleme</h3>
+            <p style="font-size:12px; opacity:0.7;">Listeden öğrenci seçin:</p>
+            <div id="manual-student-list" style="text-align:left;"></div>
+            <button class="action-btn secondary" onclick="document.getElementById('fs-manual-add').classList.add('hidden')">Kapat</button>
+        </div>
     </div>
 
+    <div id="fs-student-result" class="fullscreen-overlay hidden">
+        <div id="stu-res-card" class="glass-card"></div>
+        <button class="action-btn" style="width:200px;" onclick="document.getElementById('fs-student-result').classList.add('hidden'); nav('screen-home');">Tamam</button>
+    </div>
 
     <div id="screen-home" class="screen active">
         <div class="glass-banner">
@@ -184,15 +220,18 @@
     </div>
 
     <div id="screen-admin-dash" class="screen">
-        <div style="width:100%; max-width:400px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <div id="courseTitle" style="font-weight:bold; font-size:24px;">Dersler</div>
-            <button class="action-btn secondary" style="width:auto; padding:8px 15px; margin:0; font-size:12px;" onclick="location.reload()">Çıkış</button>
+        <div class="admin-header">
+            <div class="header-title">Dersler</div>
+            <div class="header-icon-btn" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></div>
         </div>
 
         <div id="courseListPanel" style="width:100%; max-width:400px;"></div>
 
         <div id="courseDetailPanel" class="hidden" style="width:100%; max-width:400px;">
-            <button class="action-btn secondary" onclick="closeCourse()" style="margin-bottom:15px;">&larr; Derslere Dön</button>
+            <div class="admin-header">
+                <div class="header-icon-btn" onclick="closeCourse()"><i class="fas fa-arrow-left"></i></div>
+                <div class="header-title" id="detailTitle">Detaylar</div>
+            </div>
             
             <div class="tab-nav">
                 <button class="tab-btn active" onclick="setTab('scan')">Yoklama</button>
@@ -203,16 +242,14 @@
             <div id="tab-scan" class="tab-content active">
                 <div class="glass-card">
                     <h3>Oturum Başlat</h3>
-                    <p style="font-size:12px; opacity:0.7; margin-bottom:15px;">Hafta Seçiniz (Geçmiş haftalar kilitlidir)</p>
+                    <div id="weeks-list-container" style="max-height:300px; overflow-y:auto; margin-bottom:15px;"></div>
                     
-                    <div id="weeks-list-container" style="max-height:300px; overflow-y:auto; margin-bottom:15px;">
-                        </div>
-
-                    <label style="font-size:12px; opacity:0.7; display:block; text-align:left;">Bu oturum kaç saat sayılsın?</label>
-                    <select id="sessHours"></select>
-
-                    <button class="action-btn" onclick="startSession()"><i class="fas fa-satellite-dish"></i> Başlat (Tam Ekran)</button>
-                    <button class="action-btn secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit Karekod</button>
+                    <div id="session-controls" class="hidden">
+                        <label class="input-label">Bu oturum kaç saat sayılsın?</label>
+                        <select id="sessHours"></select>
+                        <button class="action-btn" onclick="startSession()"><i class="fas fa-satellite-dish"></i> Başlat (Tam Ekran)</button>
+                        <button class="action-btn secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit Karekod</button>
+                    </div>
                 </div>
             </div>
 
@@ -222,9 +259,19 @@
 
             <div id="tab-settings" class="tab-content glass-card">
                 <h3>Ayarlar</h3>
-                <input type="number" id="setWeeklyHours" placeholder="Haftalık Saat">
-                <input type="number" id="setQrTime" placeholder="QR Süresi">
-                <input type="date" id="firstDate" onchange="autoFillDates()">
+                <div class="input-group">
+                    <label class="input-label">Haftalık Toplam Ders Saati</label>
+                    <input type="number" id="setWeeklyHours">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">QR Geri Sayım Süresi (Saniye)</label>
+                    <input type="number" id="setQrTime">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">İlk Ders Tarihi (Diğerlerini Otomatik Doldurur)</label>
+                    <input type="date" id="firstDate" onchange="autoFillDates()">
+                </div>
+                
                 <div id="weeksConfig" style="max-height:300px; overflow-y:auto; margin-top:10px;"></div>
                 <button class="action-btn" onclick="saveSettings()">Kaydet</button>
             </div>
@@ -240,10 +287,12 @@
             </div>
             <div id="stu-step-2" class="hidden">
                 <div id="studentNameDisplay" style="font-size:24px; font-weight:bold; color:#00f260; margin-bottom:15px;"></div>
-                <div class="checkbox-wrapper" onclick="toggleCheckbox()">
-                    <div class="custom-checkbox" id="confirmCheck" style="min-width:24px; height:24px; border:2px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center;"><i class="fas fa-check" style="display:none; font-size:14px; color:black;"></i></div>
-                    <span style="font-size:13px; text-align:left;">Bilgilerin doğruluğunu kabul ediyor ve devam alınmasına rıza gösteriyorum.</span>
+                
+                <div class="confirm-box" onclick="toggleCheckbox()">
+                    <div class="custom-checkbox" id="confirmCheck"><i class="fas fa-check" style="display:none; font-size:14px; color:black;"></i></div>
+                    <span style="font-size:13px; text-align:left; line-height:1.3;">Bilgilerin doğruluğunu kabul ediyor ve devam alınmasına rıza gösteriyorum.</span>
                 </div>
+
                 <button class="action-btn" id="btn-start-cam" style="opacity:0.5; pointer-events:none;" onclick="confirmAndStartCamera()">Kamerayı Aç</button>
             </div>
             <button class="action-btn secondary" onclick="nav('screen-home')">Geri</button>
@@ -259,13 +308,12 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzxO0C1Jwy70-6jjlawbAyGWA8dohu8_x9iW_zqhJ5XHeNZQaM1CPY_Fzb_jC6V0sBq/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbwc_14o9-XZVpMPyzpe4gprK9m7N2ED8oQI9UMq2xrsiF7mOj5Fgw9rakRoWj1XqNLJ/exec"; 
         const SITE_URL = "https://msefagor.github.io/Yoklama/"; 
 
         let currCourse = null; let cData = null; let qrScanner = null; let countdownInt = null; let isChecked = false;
-        let selectedWeekNo = null; let realAdminPass = "";
+        let selectedWeekNo = null; let realAdminPass = ""; let unlockedWeeks = [];
 
-        // UI NAVIGATION
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -295,17 +343,17 @@
             } catch(e) { hideLoader(); showToast("Hata oluştu"); return null; }
         }
 
-        // ADMIN FLOW
+        /* ADMIN */
         async function adminLogin() {
             const pass = document.getElementById('adminPass').value;
             const res = await api({action:'admin_login', password:pass});
             if(res && res.success) {
-                realAdminPass = res.realPass; // Store for safe mode
+                realAdminPass = res.realPass;
                 nav('screen-admin-dash');
                 const p = document.getElementById('courseListPanel'); p.innerHTML = "";
                 res.courses.forEach(c => {
-                    const el = document.createElement('div'); el.style.cssText = "background:rgba(255,255,255,0.07); padding:20px; border-radius:20px; margin-bottom:10px; cursor:pointer; border:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;";
-                    el.innerHTML = `<span style="font-size:20px; font-weight:800; color:#a1c4fd;">${c.id}</span><span style="font-weight:500;">${c.name}</span>`;
+                    const el = document.createElement('div'); el.className = "course-item";
+                    el.innerHTML = `<span class="c-code">${c.id}</span><div class="c-sep"></div><span class="c-name">${c.name}</span>`;
                     el.onclick = () => loadCourse(c.id); p.appendChild(el);
                 });
             } else showToast("Hatalı Şifre");
@@ -317,79 +365,114 @@
                 cData = res;
                 document.getElementById('courseListPanel').classList.add('hidden');
                 document.getElementById('courseDetailPanel').classList.remove('hidden');
+                document.getElementById('detailTitle').innerText = id;
                 document.getElementById('setWeeklyHours').value = res.settings.weeklyHours;
                 document.getElementById('setQrTime').value = res.settings.qrTime;
                 
-                renderWeeksList(res.weeks); // NEW WEEKS LIST
-                renderWeeksConfig(res.weeks); 
-                renderStudentList(res.students);
-                
+                renderWeeksList(res.weeks); renderWeeksConfig(res.weeks); renderStudentList(res.students);
                 setTab('scan');
-                selectedWeekNo = null; // Reset selection
-                document.getElementById('sessHours').innerHTML = ""; // Reset hours
+                selectedWeekNo = null; document.getElementById('session-controls').classList.add('hidden');
             }
         }
         function closeCourse() { document.getElementById('courseListPanel').classList.remove('hidden'); document.getElementById('courseDetailPanel').classList.add('hidden'); }
 
-        // --- NEW WEEKS LIST UI ---
         function renderWeeksList(weeks) {
-            const container = document.getElementById('weeks-list-container');
-            container.innerHTML = "";
-            const today = new Date();
-            today.setHours(0,0,0,0);
+            const container = document.getElementById('weeks-list-container'); container.innerHTML = "";
+            const today = new Date(); today.setHours(0,0,0,0);
 
             weeks.forEach(w => {
-                if(w.type !== 'Normal') return; // Sadece ders haftaları
-
+                if(w.type !== 'Normal') return;
                 const el = document.createElement('div');
-                
-                // Tarih Kontrolü
                 let isPast = false;
                 if(w.date) {
-                    const parts = w.date.split('.');
-                    const wDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-                    if(wDate < today) isPast = true;
+                    const p = w.date.split('.');
+                    if(new Date(`${p[2]}-${p[1]}-${p[0]}`) < today) isPast = true;
                 }
+                const isUnlocked = unlockedWeeks.includes(w.weekNo);
+                const lockedState = isPast && !isUnlocked;
 
-                el.className = `week-item ${isPast ? 'locked' : ''}`;
+                el.className = `week-item ${lockedState ? 'locked' : ''}`;
                 el.innerHTML = `
                     <div style="text-align:left;">
                         <div style="font-weight:bold;">${w.weekNo}. Hafta</div>
-                        <div style="font-size:12px; opacity:0.6;">${w.date || 'Tarih Yok'}</div>
+                        <div style="font-size:12px; opacity:0.6;">${w.date||'Tarih Yok'}</div>
                     </div>
-                    <div>${isPast ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-chevron-right"></i>'}</div>
+                    <div>
+                        ${lockedState ? '<div class="lock-btn"><i class="fas fa-lock"></i></div>' : 
+                          isPast ? '<div class="lock-btn" style="background:rgba(0,242,96,0.2);"><i class="fas fa-unlock"></i></div>' : ''}
+                    </div>
                 `;
 
-                el.onclick = () => {
-                    // Safe Mode Check
-                    if(isPast) {
-                        const pass = prompt("Geçmiş hafta düzenleme şifresi:");
-                        if(pass !== realAdminPass) return alert("Hatalı Şifre");
+                // Tıklama Olayı (Lock/Unlock ve Seçim)
+                el.onclick = (e) => {
+                    // Eğer kilit ikonuna tıklandıysa
+                    if(lockedState) {
+                        const p = prompt("Hafta kilidini açmak için şifre:");
+                        if(p === realAdminPass) {
+                            unlockedWeeks.push(w.weekNo);
+                            renderWeeksList(weeks); // Re-render
+                        } else alert("Hatalı Şifre");
+                        return;
                     }
-                    
-                    // Select Logic
-                    document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
-                    el.classList.add('active');
-                    selectedWeekNo = w.weekNo;
-                    
-                    // Update Hours Dropdown
-                    const hrsSel = document.getElementById('sessHours');
-                    hrsSel.innerHTML = "";
-                    const total = parseInt(document.getElementById('setWeeklyHours').value)||3;
-                    const done = w.completedHours || 0;
-                    const rem = total - done;
-                    
-                    if(rem <= 0) {
-                        const opt = document.createElement('option'); opt.text="Tamamlandı"; hrsSel.add(opt);
+
+                    // Kilitli değilse: Geçmiş hafta ise Manuel Ekleme aç, Gelecek hafta ise Ders Başlat
+                    if(isPast) {
+                        openManualAdd(w.weekNo);
                     } else {
-                        for(let i=1; i<=rem; i++) {
-                            const opt = document.createElement('option'); opt.value=i; opt.text=i+" Saat"; 
-                            if(i===rem) opt.selected=true; hrsSel.add(opt);
-                        }
+                        // Gelecek/Bugün için Oturum Başlat
+                        document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
+                        el.classList.add('active');
+                        selectedWeekNo = w.weekNo;
+                        document.getElementById('session-controls').classList.remove('hidden');
+                        updateHoursDropdown(w);
                     }
                 };
                 container.appendChild(el);
             });
+        }
+
+        // Manuel Ekleme Modalı
+        function openManualAdd(weekNo) {
+            document.getElementById('fs-manual-add').classList.remove('hidden');
+            const list = document.getElementById('manual-student-list');
+            list.innerHTML = "";
+            
+            cData.students.sort((a,b)=>a.name.localeCompare(b.name)).forEach(s => {
+                const item = document.createElement('div');
+                item.className = "manual-list-item";
+                item.innerHTML = `
+                    <div><b>${s.name}</b><br><small>${s.id}</small></div>
+                    <button class="action-btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="submitManual('${s.id}', ${weekNo}, this)">Ekle</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        async function submitManual(stuId, weekNo, btn) {
+            if(!confirm("Bu öğrenciyi derse eklemek istiyor musunuz?")) return;
+            const res = await api({ action: 'manual_attendance', courseId: currCourse, weekNo: weekNo, studentId: stuId });
+            if(res && res.success) {
+                btn.innerText = "Eklendi";
+                btn.style.background = "#00f260";
+                btn.disabled = true;
+            } else {
+                alert(res ? res.msg : "Hata");
+            }
+        }
+
+        function updateHoursDropdown(w) {
+            const hSel = document.getElementById('sessHours'); hSel.innerHTML = "";
+            const total = parseInt(document.getElementById('setWeeklyHours').value)||3;
+            const done = w ? (w.completedHours || 0) : 0;
+            const rem = total - done;
+            if(rem <= 0) {
+                const opt = document.createElement('option'); opt.text="Bu hafta tamamlandı"; hSel.add(opt);
+            } else {
+                for(let i=1; i<=rem; i++) {
+                    const opt = document.createElement('option'); opt.value=i; opt.text=i+" Saat"; 
+                    if(i===rem) opt.selected=true; hSel.add(opt);
+                }
+            }
         }
 
         function renderStudentList(list) {
@@ -397,26 +480,22 @@
             list.sort((a,b)=>a.remaining-b.remaining).forEach(s=>{
                 const r=document.createElement('div'); 
                 r.style.cssText="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; border:1px solid rgba(255,255,255,0.1);";
-                
-                let color = "";
-                let text = "";
-                
-                if (s.absent === 0) {
-                    color = "#FFCE56"; // Sarı (0 Devamsızlık)
-                    text = `<span style="color:${color}; font-weight:bold;">Mükemmel</span>`;
-                    r.style.borderLeft = `4px solid ${color}`;
-                } else if (s.remaining <= 0) {
-                    color = "#FF416C"; // Kırmızı (Kaldı)
-                    text = `<span style="color:${color}; font-weight:bold;">KALDI</span>`;
-                    r.style.borderLeft = `4px solid ${color}`;
-                } else {
-                    color = "#00f260"; // Yeşil (Devam ediyor)
-                    text = `<span style="color:${color}; font-weight:bold;">Kalan: ${s.remaining}s</span>`;
-                    r.style.borderLeft = `4px solid ${color}`;
-                }
+                let t = "", c = "";
+                if(s.absent===0) { c="#FFCE56"; t="Sıfır Devamsızlık"; r.style.borderLeft=`4px solid ${c}`; }
+                else if(s.remaining<=0) { c="#FF416C"; t="KALDI"; r.style.borderLeft=`4px solid ${c}`; }
+                else { c="#00f260"; t=`Kalan: ${s.remaining}s`; r.style.borderLeft=`4px solid ${c}`; }
+                r.innerHTML=`<div><b>${s.name}</b><br><small style="opacity:0.6;">${s.id}</small></div><div style="text-align:right;"><span style="color:${c}; font-weight:bold;">${t}</span><br><small>Devamsız: ${s.absent}s</small></div>`;
+                d.appendChild(r);
+            });
+        }
 
-                r.innerHTML=`<div><b>${s.name}</b><br><small style="opacity:0.6;">${s.id}</small></div>
-                             <div style="text-align:right;">${text}<br><small style="opacity:0.6;">Devamsız: ${s.absent}s</small></div>`;
+        function renderWeeksConfig(weeks) {
+            const d=document.getElementById('weeksConfig'); d.innerHTML="";
+            weeks.forEach(w=>{
+                const r=document.createElement('div'); r.className = "week-row-glass";
+                r.innerHTML=`<div style="width:15%;">H.${w.weekNo}</div>
+                             <input value="${w.date}" type="date" id="d-${w.weekNo}" style="width:40%;"> 
+                             <select id="t-${w.weekNo}" style="width:35%;"><option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option><option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option><option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option><option value="Final" ${w.type=='Final'?'selected':''}>Final</option><option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option></select>`;
                 d.appendChild(r);
             });
         }
@@ -433,23 +512,12 @@
                 if(res&&res.success) {
                     const overlay = document.getElementById('fs-dynamic-session');
                     overlay.classList.remove('hidden');
-                    
                     const q=document.getElementById('qrcode'); q.innerHTML=""; 
-                    new QRCode(q, {text:currCourse, width:300, height:300}); // Big QR
-                    
+                    new QRCode(q, {text:currCourse, width:300, height:300});
                     let dur=parseInt(document.getElementById('setQrTime').value)||15; 
                     const disp=document.getElementById('countdownDisplay');
-                    
-                    if(countdownInt) clearInterval(countdownInt); 
-                    disp.innerText=dur;
-                    
-                    countdownInt=setInterval(()=>{ 
-                        dur--; disp.innerText=dur; 
-                        if(dur<=0){ 
-                            clearInterval(countdownInt); 
-                            overlay.classList.add('hidden'); // Close modal
-                        } 
-                    }, 1000);
+                    if(countdownInt) clearInterval(countdownInt); disp.innerText=dur;
+                    countdownInt=setInterval(()=>{ dur--; disp.innerText=dur; if(dur<=0){ clearInterval(countdownInt); overlay.classList.add('hidden'); } }, 1000);
                 }
             },()=>{hideLoader(); showToast("GPS Hatası");},{enableHighAccuracy:true});
         }
@@ -459,12 +527,12 @@
             loadCourse(currCourse);
         }
         function showStaticQR() { 
-            document.getElementById('fs-static-qr').classList.remove('hidden');
+            document.getElementById('fs-static-qr').classList.remove('hidden'); 
             const d = document.getElementById('static-qrcode'); d.innerHTML=""; 
             new QRCode(d, {text:SITE_URL, width:300, height:300});
         }
 
-        // STUDENT FLOW
+        /* STUDENT */
         async function checkStudentName() {
             const id = document.getElementById('stuId').value; if(!id) return showToast("Numara giriniz");
             const res = await api({ action: 'get_student_name', studentId: id });
@@ -476,15 +544,9 @@
         }
         function toggleCheckbox() { 
             isChecked = !isChecked; 
-            const b = document.getElementById('confirmCheck'); 
-            const btn = document.getElementById('btn-start-cam');
-            if(isChecked) { 
-                b.style.background="#00f260"; b.style.borderColor="#00f260"; b.querySelector('i').style.display="block";
-                btn.style.opacity='1'; btn.style.pointerEvents='auto'; 
-            } else { 
-                b.style.background="transparent"; b.style.borderColor="rgba(255,255,255,0.5)"; b.querySelector('i').style.display="none";
-                btn.style.opacity='0.5'; btn.style.pointerEvents='none'; 
-            }
+            const b = document.getElementById('confirmCheck'); const btn = document.getElementById('btn-start-cam');
+            if(isChecked) { b.classList.add('checked'); btn.style.opacity='1'; btn.style.pointerEvents='auto'; b.querySelector('i').style.display="block"; } 
+            else { b.classList.remove('checked'); btn.style.opacity='0.5'; btn.style.pointerEvents='none'; b.querySelector('i').style.display="none"; }
         }
         function confirmAndStartCamera() {
             const id = document.getElementById('stuId').value; nav('screen-student-scan');
@@ -493,32 +555,17 @@
                 qrScanner.stop(); showLoader("Konum Alınıyor...");
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     const res = await api({action:'student_scan', studentId:id, qrCourseId:txt, lat:pos.coords.latitude, lng:pos.coords.longitude});
-                    if(res && res.success) { 
-                        // SHOW STUDENT RESULT MODAL
+                    if(res && res.success) {
                         const modal = document.getElementById('fs-student-result');
                         const card = document.getElementById('stu-res-card');
                         const s = res.stat;
                         
-                        let theme = "";
-                        let title = "";
-                        
-                        if(s.absent === 0) { theme = "stat-yellow"; title = "Mükemmel"; }
-                        else if(s.remaining <= 0) { theme = "stat-red"; title = "KALDI"; }
-                        else { theme = "stat-green"; title = "BAŞARILI"; }
+                        let theme = ""; let title = "";
+                        if(s.absent === 0) { theme = "stat-yellow"; title = "Devamsızlık Hakkınız Var"; }
+                        else if(s.remaining <= 0) { theme = "stat-red"; title = "Devamsızlık Hakkınız Yok"; }
+                        else { theme = "stat-green"; title = "Devamsızlık Hakkınız Var"; }
 
-                        card.innerHTML = `
-                            <h2>${title}</h2>
-                            <p>Devam durumunuz:</p>
-                            <div class="stat-card ${theme}">
-                                <small>Toplam Devamsızlık</small>
-                                <span class="stat-val">${s.absent} Saat</span>
-                                <small>(Maksimum: ${s.max})</small>
-                            </div>
-                            <div class="stat-card" style="margin-top:10px; background:rgba(255,255,255,0.1);">
-                                <small>Kalan Hakkınız</small>
-                                <span class="stat-val">${s.remaining} Saat</span>
-                            </div>
-                        `;
+                        card.innerHTML = `<h2>${title}</h2><div class="stat-card ${theme}"><small>Toplam Devamsızlık</small><span class="stat-val">${s.absent} Saat</span><small>Maksimum Hak: ${s.max}</small></div><div class="stat-card" style="margin-top:10px; background:rgba(255,255,255,0.1);"><small>Kalan Hak</small><span class="stat-val">${s.remaining} Saat</span></div>`;
                         modal.classList.remove('hidden');
                     } else { showToast(res?res.error:"Hata"); nav('screen-home'); }
                 }, ()=>{hideLoader(); showToast("GPS Açın!"); nav('screen-home');},{enableHighAccuracy:true});
@@ -526,17 +573,6 @@
         }
         function stopScan() { if(qrScanner) qrScanner.stop(); nav('screen-home'); }
 
-        // SETTINGS
-        function renderWeeksConfig(weeks) {
-            const d=document.getElementById('weeksConfig'); d.innerHTML="";
-            weeks.forEach(w=>{
-                const r=document.createElement('div'); r.className = "week-row-glass";
-                r.innerHTML=`<div style="width:15%;">H.${w.weekNo}</div>
-                             <input value="${w.date}" type="date" id="d-${w.weekNo}" style="width:40%;"> 
-                             <select id="t-${w.weekNo}" style="width:35%;"><option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option><option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option><option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option><option value="Final" ${w.type=='Final'?'selected':''}>Final</option><option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option></select>`;
-                d.appendChild(r);
-            });
-        }
         async function saveSettings() {
             const weeks=[]; cData.weeks.forEach(w=>{ weeks.push({weekNo:w.weekNo, date:document.getElementById(`d-${w.weekNo}`).value, type:document.getElementById(`t-${w.weekNo}`).value})});
             const res=await api({action:'save_settings', courseId:currCourse, weeklyHours:document.getElementById('setWeeklyHours').value, qrTime:document.getElementById('setQrTime').value, weeks:weeks});
