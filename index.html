@@ -58,11 +58,20 @@
         .week-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; position: relative; }
         .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
         
-        /* MADDE 2: SOLUK HAFTALAR */
+        /* PASİF HAFTA (SOLUK) */
         .week-item.locked { 
-            opacity: 0.4; filter: grayscale(80%); background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05);
+            opacity: 0.4; /* İyice soluk */
+            filter: grayscale(100%); /* Tamamen gri */
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .week-item.unlocked-past { opacity: 1; filter: none; background: rgba(255, 206, 86, 0.1); border-color: rgba(255, 206, 86, 0.5); }
+        /* KİLİDİ AÇILMIŞ HAFTA */
+        .week-item.unlocked-past { 
+            opacity: 1; 
+            filter: none; 
+            background: rgba(255, 206, 86, 0.1); 
+            border: 1px solid rgba(255, 206, 86, 0.5); 
+        }
 
         /* LOADER */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); z-index: 10000; display: flex; justify-content: center; align-items: center; }
@@ -152,7 +161,8 @@
         <div class="glass-card" style="background:white; color:#333;">
             <h3>Derse Giriş Kodu</h3>
             <div id="static-qrcode"></div>
-            <button class="action-btn secondary" style="background:#eee; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
+            <p style="font-size:20px; margin-top:20px;">Öğrenciler için sabit bağlantı.</p>
+            <button class="action-btn secondary" style="width:200px; background:#fff; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
         </div>
     </div>
 
@@ -374,17 +384,23 @@
 
         function renderWeeksList(weeks) {
             const container = document.getElementById('weeks-list-container'); container.innerHTML = "";
-            const today = new Date(); today.setHours(0,0,0,0);
+            const today = new Date(); 
+            // Tarihi sadece gün bazlı karşılaştırmak için saatleri sıfırla
+            today.setHours(0,0,0,0);
 
             weeks.forEach(w => {
                 if(w.type !== 'Normal') return;
                 const el = document.createElement('div');
                 let isPast = false;
+                
+                // Tarih kontrolü (GG.AA.YYYY formatı için düzeltilmiş)
                 if(w.date) {
-                    const p = w.date.split('.');
-                    const wDate = new Date(`${p[2]}-${p[1]}-${p[0]}`); // DD.MM.YYYY to YYYY-MM-DD
+                    const p = w.date.split('.'); // ["05", "02", "2026"]
+                    // Ay 0-indeksli olduğu için -1 yapıyoruz
+                    const wDate = new Date(p[2], p[1]-1, p[0]);
                     if(wDate < today) isPast = true;
                 }
+                
                 const isUnlocked = unlockedWeeks.includes(w.weekNo);
                 const lockedState = isPast && !isUnlocked;
 
@@ -403,31 +419,42 @@
                 `;
 
                 el.onclick = async () => {
-                    // RESET VIEWS
+                    // Önce UI reset
                     document.getElementById('session-controls').classList.add('hidden');
                     document.getElementById('manual-add-section').classList.add('hidden');
+                    
+                    // Kilitli ise şifre sor
+                    if(lockedState) {
+                        const p = prompt("Hafta kilidini açmak için şifre:");
+                        if(p === realAdminPass) { 
+                            unlockedWeeks.push(w.weekNo); 
+                            renderWeeksList(weeks); // Listeyi yenile ki kilit açılsın
+                            
+                            // Hemen ardından o haftanın detaylarını yükle
+                            document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
+                            selectedWeekNo = w.weekNo;
+                            document.getElementById('week-detail-view').classList.remove('hidden');
+                            const attendees = await loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
+                            renderManualList(attendees);
+                        } else {
+                            alert("Hatalı Şifre");
+                        }
+                        return;
+                    }
+
+                    // Kilitli değil (Gelecek veya Açılmış Geçmiş)
                     document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
                     el.classList.add('active');
                     selectedWeekNo = w.weekNo;
 
                     document.getElementById('week-detail-view').classList.remove('hidden');
-                    // Always load attendees first
                     const attendees = await loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
 
-                    // LOGIC
-                    if(lockedState) {
-                        const p = prompt("Hafta kilidini açmak için şifre:");
-                        if(p === realAdminPass) { 
-                            unlockedWeeks.push(w.weekNo); 
-                            renderWeeksList(weeks); 
-                            // MADDE 1 DUZELTME: Manual eklemeyi direkt aç
-                            renderManualList(attendees); 
-                        } else alert("Hatalı Şifre");
-                    } else if(isPast || isUnlocked) {
-                        // If it's past (and unlocked) OR just past, show manual add if unlocked
-                        if(isUnlocked) renderManualList(attendees);
+                    if(isPast || isUnlocked) {
+                        // Geçmiş ve açık ise Manuel Ekle
+                        renderManualList(attendees);
                     } else {
-                        // Future/Today
+                        // Gelecek ise Oturum Başlat
                         document.getElementById('session-controls').classList.remove('hidden');
                         updateHoursDropdown(w);
                     }
@@ -462,7 +489,6 @@
             document.getElementById('manual-add-section').classList.remove('hidden');
             const list = document.getElementById('manual-add-list'); list.innerHTML = "";
             
-            // Filter absent students
             const absentStudents = cData.students.filter(s => !presentIds.includes(s.id.toString()));
             
             if(absentStudents.length === 0) {
@@ -639,5 +665,3 @@
     </script>
 </body>
 </html>
-
-
