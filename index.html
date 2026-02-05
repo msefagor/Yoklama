@@ -23,48 +23,17 @@
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
         @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
-        /* ANIMATED PROFESSIONAL BACKGROUND (For Fullscreen Modes) */
-        .animated-gradient-bg {
-            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #240b36, #c31432);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-        }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         /* FULLSCREEN OVERLAY */
         .fullscreen-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999;
+            background: rgba(0,0,0,0.95); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            animation: fadeIn 0.3s;
+            backdrop-filter: blur(15px); animation: fadeIn 0.3s;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* STATIC QR SPECIFIC */
-        #fs-static-qr .qr-content {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; align-items: center;
-        }
-        /* Make Static QR Huge */
-        #static-qrcode img {
-            width: 70vh !important; height: 70vh !important; /* Screen Height Based */
-            max-width: 800px; max-height: 800px;
-            border: 10px solid white; border-radius: 20px;
-        }
-
         /* DYNAMIC SESSION LAYOUT */
-        .fs-session-container {
-            display: flex; flex-direction: row; width: 100%; height: 100%; padding: 40px; box-sizing: border-box; gap: 40px;
-        }
+        .fs-session-container { display: flex; flex-direction: row; width: 100%; height: 100%; padding: 40px; box-sizing: border-box; gap: 40px; }
         .fs-list-area {
             flex: 0 0 350px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px; padding: 20px; display: flex; flex-direction: column; backdrop-filter: blur(20px);
@@ -86,14 +55,12 @@
         .qr-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 30px; color: white; z-index: 10; }
 
         /* WEEK ITEMS STYLING */
-        .week-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .week-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; position: relative; }
         .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
         
-        /* MADDE 1: TAMAMLANAN HAFTALAR SOLUK */
+        /* MADDE 2: SOLUK HAFTALAR */
         .week-item.locked { 
-            opacity: 0.4; /* İyice soluk */
-            filter: grayscale(80%); /* Renksiz */
-            background: rgba(0,0,0,0.3); 
+            opacity: 0.4; filter: grayscale(80%); background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05);
         }
         .week-item.unlocked-past { opacity: 1; filter: none; background: rgba(255, 206, 86, 0.1); border-color: rgba(255, 206, 86, 0.5); }
 
@@ -116,6 +83,18 @@
         .main-btn { display: flex; align-items: center; justify-content: center; gap: 15px; background: linear-gradient(135deg, #667eea, #764ba2); }
         .action-btn { background: var(--accent-grad); }
         .secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
+
+        /* MANUAL ADD SECTION */
+        #manual-add-section { 
+            margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); 
+            padding-top: 20px; text-align: left; 
+        }
+        .manual-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,69,58,0.1); /* Hafif Kırmızı */
+            padding: 10px; border-radius: 10px; margin-bottom: 5px;
+            border: 1px solid rgba(255,69,58,0.2);
+        }
 
         .credits-box { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 20px; background: rgba(0,0,0,0.3); border-radius: 50px; font-size: 12px; color: rgba(255,255,255,0.7); backdrop-filter: blur(5px); z-index: 100; }
         .credits-name { color: #00f260; font-weight: 700; }
@@ -153,18 +132,6 @@
         .tab-content { display: none; } .tab-content.active { display: block; }
         .week-row-glass { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
         .week-row-glass input, .week-row-glass select { margin: 0; padding: 10px; font-size: 13px; background: rgba(0,0,0,0.2); border: none; }
-        
-        /* MANUAL ADD SECTION */
-        #manual-add-section { 
-            margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); 
-            padding-top: 20px; text-align: left; 
-        }
-        .manual-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,69,58,0.1); /* Hafif Kırmızı */
-            padding: 10px; border-radius: 10px; margin-bottom: 5px;
-            border: 1px solid rgba(255,69,58,0.2);
-        }
     </style>
 </head>
 <body>
@@ -181,16 +148,15 @@
         </div>
     </div>
 
-    <div id="fs-static-qr" class="fullscreen-overlay animated-gradient-bg hidden">
-        <div class="qr-content" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); padding:40px; border-radius:40px; border:1px solid rgba(255,255,255,0.2); text-align:center;">
-            <h2 style="margin-top:0;">Derse Giriş Kodu</h2>
+    <div id="fs-static-qr" class="fullscreen-overlay hidden">
+        <div class="glass-card" style="background:white; color:#333;">
+            <h3>Derse Giriş Kodu</h3>
             <div id="static-qrcode"></div>
-            <p style="font-size:20px; margin-top:20px;">Öğrenciler için sabit bağlantı.</p>
-            <button class="action-btn secondary" style="width:200px; background:#fff; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
+            <button class="action-btn secondary" style="background:#eee; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
         </div>
     </div>
 
-    <div id="fs-dynamic-session" class="fullscreen-overlay animated-gradient-bg hidden">
+    <div id="fs-dynamic-session" class="fullscreen-overlay hidden">
         <div class="fs-session-container">
             <div class="fs-list-area">
                 <div class="fs-list-header"><i class="fas fa-users"></i> Anlık Katılım</div>
@@ -416,7 +382,8 @@
                 let isPast = false;
                 if(w.date) {
                     const p = w.date.split('.');
-                    if(new Date(`${p[2]}-${p[1]}-${p[0]}`) < today) isPast = true;
+                    const wDate = new Date(`${p[2]}-${p[1]}-${p[0]}`); // DD.MM.YYYY to YYYY-MM-DD
+                    if(wDate < today) isPast = true;
                 }
                 const isUnlocked = unlockedWeeks.includes(w.weekNo);
                 const lockedState = isPast && !isUnlocked;
@@ -453,7 +420,8 @@
                         if(p === realAdminPass) { 
                             unlockedWeeks.push(w.weekNo); 
                             renderWeeksList(weeks); 
-                            renderManualList(attendees); // Show manual list
+                            // MADDE 1 DUZELTME: Manual eklemeyi direkt aç
+                            renderManualList(attendees); 
                         } else alert("Hatalı Şifre");
                     } else if(isPast || isUnlocked) {
                         // If it's past (and unlocked) OR just past, show manual add if unlocked
