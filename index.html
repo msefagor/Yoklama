@@ -21,7 +21,6 @@
         }
         body { margin: 0; padding: 0; background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3)); color: var(--text); font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; overflow: hidden; }
 
-        /* ANIMATED BACKGROUND */
         .blob { position: absolute; filter: blur(80px); z-index: -1; opacity: 0.5; animation: move 15s infinite alternate; }
         .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #0575E6; border-radius: 50%; }
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
@@ -98,7 +97,6 @@
         #fs-static-qr .qr-content { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(30px); padding: 30px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; max-height: 90vh; }
         #static-qrcode img { max-height: 60vh !important; width: auto !important; border: 10px solid white; border-radius: 15px; }
 
-        /* MADDE 2: DYNAMIC SESSION FIX (UPDATED) */
         .fs-session-container { display: flex; width: 100%; height: 100%; padding: 20px; box-sizing: border-box; gap: 20px; overflow: hidden; flex-direction: row; }
         .fs-list-area { width: 350px; min-width: 300px; background: rgba(20,20,20,0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
         .fs-qr-area { flex: 1; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; padding: 10px; height: 100%; box-sizing: border-box; min-height: 0; }
@@ -114,7 +112,20 @@
         .mobile-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; overflow-y: auto; }
         .mobile-card { background: var(--glass-bg); backdrop-filter: blur(20px); border: var(--glass-border); padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; }
 
-        /* MADDE 1: STUDENT RESULT FIX (REDESIGN) */
+        /* UPLOAD PANEL STYLE */
+        .upload-area {
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.02);
+            cursor: pointer;
+        }
+        .upload-area:hover { background: rgba(255,255,255,0.05); border-color: #00f260; }
+        .upload-icon { font-size: 50px; color: #a1c4fd; margin-bottom: 15px; }
+
+        /* STUDENT RESULT FIX */
         #stu-res-card { width: 90%; max-width: 380px; background: rgba(30, 30, 30, 0.9); backdrop-filter: blur(40px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 30px; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 40px 80px rgba(0,0,0,0.8); }
         .res-icon { font-size: 60px; margin-bottom: 15px; display: block; }
         .res-title { font-size: 22px; font-weight: 800; margin: 0 0 20px 0; }
@@ -183,7 +194,8 @@
     <div id="screen-admin-dash" class="dashboard-container hidden">
         <aside class="sidebar collapsed" id="sidebar">
             <div class="brand"><i class="fas fa-cube"></i> Kontrol Paneli</div>
-            <div class="nav-item active" onclick="showCourseList()"><i class="fas fa-th-large"></i> Dersler</div>
+            <div class="nav-item active" onclick="showPanel('courses')"><i class="fas fa-th-large"></i> Dersler</div>
+            <div class="nav-item" onclick="showPanel('upload')"><i class="fas fa-file-upload"></i> Veri Yükle</div>
             <div class="nav-item logout" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
         </aside>
 
@@ -199,6 +211,25 @@
             </div>
 
             <div id="courseListPanel" class="course-grid"></div>
+
+            <div id="uploadPanel" class="hidden" style="max-width: 600px; margin: 0 auto;">
+                <div class="glass-card">
+                    <h2 style="margin-bottom:20px;">Yeni Veri Yükleme</h2>
+                    <p style="opacity:0.7; margin-bottom:30px;">Ders ve Öğrenci listesini içeren Excel/CSV dosyasını yükleyin.</p>
+                    
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Dosyayı Buraya Sürükleyin</h3>
+                        <p style="font-size:12px; opacity:0.6;">veya seçmek için tıklayın</p>
+                        <input type="file" id="fileInput" accept=".csv" style="display:none" onchange="handleFileSelect(this)">
+                    </div>
+                    <div id="file-info" style="margin-top:15px; font-size:14px; color:#00f260;"></div>
+                    
+                    <button id="btnUpload" class="action-btn" style="width:100%; margin-top:20px; display:none;" onclick="uploadData()">
+                        <i class="fas fa-check"></i> Veriyi İşle ve Kaydet
+                    </button>
+                </div>
+            </div>
 
             <div id="courseDetailPanel" class="detail-layout hidden">
                 <div class="detail-sidebar">
@@ -341,13 +372,14 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycby2PP1BOcRBk22HoXG6m8XXvznocPv334GF3VUEZ6JKfKisM4uSf21KwAO4lnZT1gxZ/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbw-iGoVRK9YxWFQb8kjD8FDc_5COGXrf_DZ8C019cXZgTofVWY9x7T8jr5POuIFNqQI/exec"; 
         const SITE_URL = "https://msefagor.github.io/Yoklama/"; 
 
         let currCourse = null; let cData = null; let qrScanner = null; 
         let countdownInt = null; let liveListInt = null;
         let isChecked = false; let selectedWeekNo = null; let realAdminPass = ""; 
         let unlockedWeeks = []; let currentStudentDetails = [];
+        let uploadFileContent = null;
 
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('tr-TR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
@@ -397,17 +429,63 @@
         }
 
         function showCourseList() {
-            document.getElementById('courseListPanel').classList.remove('hidden');
+            showPanel('courses');
+        }
+
+        function showPanel(panelName) {
+            // Hide all panels
+            document.getElementById('courseListPanel').classList.add('hidden');
             document.getElementById('courseDetailPanel').classList.add('hidden');
-            document.getElementById('dash-title').innerText = "Dersler";
+            document.getElementById('uploadPanel').classList.add('hidden');
+            
+            // Sidebar Active State
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            if(panelName === 'courses') {
+                document.getElementById('courseListPanel').classList.remove('hidden');
+                document.getElementById('dash-title').innerText = "Dersler";
+                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+            } else if (panelName === 'upload') {
+                document.getElementById('uploadPanel').classList.remove('hidden');
+                document.getElementById('dash-title').innerText = "Veri Yükle";
+                document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+            }
+        }
+
+        /* --- UPLOAD LOGIC --- */
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if(file) {
+                document.getElementById('file-info').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadFileContent = e.target.result;
+                    document.getElementById('btnUpload').style.display = 'inline-flex';
+                };
+                reader.readAsText(file); // Default UTF-8 usually works, if issues try 'ISO-8859-9'
+            }
+        }
+
+        async function uploadData() {
+            if(!uploadFileContent) return;
+            const res = await api({ action: 'upload_data', csvContent: uploadFileContent });
+            if(res && res.success) {
+                alert("Başarılı! " + res.msg);
+                location.reload(); // Refresh to see new course
+            } else {
+                alert("Hata: " + (res ? res.error : "Bilinmiyor"));
+            }
         }
 
         async function loadCourse(id) {
             currCourse = id; const res = await api({action:'get_course_details', courseId:id});
             if(res && res.success) {
                 cData = res;
+                // Hide main panels, show detail
                 document.getElementById('courseListPanel').classList.add('hidden');
+                document.getElementById('uploadPanel').classList.add('hidden');
                 document.getElementById('courseDetailPanel').classList.remove('hidden');
+                
                 document.getElementById('dash-title').innerText = id;
                 document.getElementById('setLimitPct').value = res.settings.limitPct || 30;
                 document.getElementById('setWeeklyHours').value = res.settings.weeklyHours;
@@ -579,7 +657,6 @@
                     res.logs.forEach(l => {
                         const div = document.createElement('div'); div.className = "live-student-item";
                         const t = new Date(l.time);
-                        // MADDE 1: ANLIK LİSTE HİZALAMA
                         div.innerHTML = `<span style="text-align:left;">${l.name}</span><span style="text-align:right; opacity:0.6;">${t.getHours()}:${t.getMinutes()<10?'0':''}${t.getMinutes()}</span>`;
                         listContainer.appendChild(div);
                     });
@@ -628,7 +705,6 @@
                         else if(s.remaining <= 0) { color = "#FF416C"; title = "Devamsızlık Hakkınız Yok"; icon = "fa-times-circle"; }
                         else { color = "#00f260"; title = "Devam Hakkınız Var"; icon = "fa-check-circle"; }
 
-                        // MADDE 2: STUDENT RESULT UI (FIXED)
                         card.innerHTML = `
                             <div class="res-title-box">
                                 <i class="fas ${icon} res-icon" style="color: ${color};"></i>
