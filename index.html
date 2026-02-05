@@ -23,16 +23,50 @@
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
         @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
+        /* --- NEW: PROFESSIONAL ANIMATED BACKGROUND --- */
+        .animated-gradient-bg {
+            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #240b36, #1cb5e0, #000046);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* FULLSCREEN OVERLAY */
         .fullscreen-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999;
+            z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            backdrop-filter: blur(15px); animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* DYNAMIC SESSION LAYOUT */
+        /* --- STATIC QR DESIGN (HUGE) --- */
+        #fs-static-qr .qr-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            padding: 40px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; align-items: center;
+            animation: popIn 0.4s;
+        }
+        /* QR Code Image Override for Huge Size */
+        #static-qrcode img {
+            width: 75vh !important; /* Screen Height Based - HUGE */
+            height: 75vh !important;
+            max-width: 900px;
+            max-height: 900px;
+            border: 15px solid white;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        /* --- DYNAMIC SESSION LAYOUT --- */
         .fs-session-container { display: flex; flex-direction: row; width: 100%; height: 100%; padding: 40px; box-sizing: border-box; gap: 40px; }
         .fs-list-area {
             flex: 0 0 350px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
@@ -49,29 +83,22 @@
 
         .fs-qr-area {
             flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(255, 255, 255, 0.02); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative;
+            background: rgba(255, 255, 255, 0.05); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); position: relative;
+            backdrop-filter: blur(10px);
         }
-        #qrcode img { width: 100% !important; height: auto !important; max-width: 60vh; border-radius: 20px; box-shadow: 0 0 50px rgba(0, 242, 96, 0.2); border: 10px solid white; }
+        /* Dynamic QR Size */
+        #qrcode img { width: 100% !important; height: auto !important; max-width: 65vh; border-radius: 20px; box-shadow: 0 0 50px rgba(0, 242, 96, 0.2); border: 10px solid white; }
         .qr-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 30px; color: white; z-index: 10; }
 
-        /* WEEK ITEMS STYLING */
+        /* WEEK ITEMS STYLING & LOCK LOGIC */
         .week-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; position: relative; }
         .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
         
-        /* PASİF HAFTA (SOLUK) */
+        /* SOLUK HAFTALAR (GRAYSCALE) */
         .week-item.locked { 
-            opacity: 0.4; /* İyice soluk */
-            filter: grayscale(100%); /* Tamamen gri */
-            background: rgba(0,0,0,0.3); 
-            border: 1px solid rgba(255,255,255,0.05);
+            opacity: 0.4; filter: grayscale(100%); background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05);
         }
-        /* KİLİDİ AÇILMIŞ HAFTA */
-        .week-item.unlocked-past { 
-            opacity: 1; 
-            filter: none; 
-            background: rgba(255, 206, 86, 0.1); 
-            border: 1px solid rgba(255, 206, 86, 0.5); 
-        }
+        .week-item.unlocked-past { opacity: 1; filter: none; background: rgba(255, 206, 86, 0.1); border-color: rgba(255, 206, 86, 0.5); }
 
         /* LOADER */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); z-index: 10000; display: flex; justify-content: center; align-items: center; }
@@ -94,16 +121,8 @@
         .secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
 
         /* MANUAL ADD SECTION */
-        #manual-add-section { 
-            margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); 
-            padding-top: 20px; text-align: left; 
-        }
-        .manual-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,69,58,0.1); /* Hafif Kırmızı */
-            padding: 10px; border-radius: 10px; margin-bottom: 5px;
-            border: 1px solid rgba(255,69,58,0.2);
-        }
+        #manual-add-section { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; text-align: left; }
+        .manual-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,69,58,0.1); padding: 10px; border-radius: 10px; margin-bottom: 5px; border: 1px solid rgba(255,69,58,0.2); }
 
         .credits-box { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 10px 20px; background: rgba(0,0,0,0.3); border-radius: 50px; font-size: 12px; color: rgba(255,255,255,0.7); backdrop-filter: blur(5px); z-index: 100; }
         .credits-name { color: #00f260; font-weight: 700; }
@@ -157,16 +176,16 @@
         </div>
     </div>
 
-    <div id="fs-static-qr" class="fullscreen-overlay hidden">
-        <div class="glass-card" style="background:white; color:#333;">
-            <h3>Derse Giriş Kodu</h3>
+    <div id="fs-static-qr" class="fullscreen-overlay animated-gradient-bg hidden">
+        <div class="qr-content">
+            <h2 style="margin-top:0;">Derse Giriş Kodu</h2>
             <div id="static-qrcode"></div>
             <p style="font-size:20px; margin-top:20px;">Öğrenciler için sabit bağlantı.</p>
             <button class="action-btn secondary" style="width:200px; background:#fff; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
         </div>
     </div>
 
-    <div id="fs-dynamic-session" class="fullscreen-overlay hidden">
+    <div id="fs-dynamic-session" class="fullscreen-overlay animated-gradient-bg hidden">
         <div class="fs-session-container">
             <div class="fs-list-area">
                 <div class="fs-list-header"><i class="fas fa-users"></i> Anlık Katılım</div>
@@ -384,23 +403,17 @@
 
         function renderWeeksList(weeks) {
             const container = document.getElementById('weeks-list-container'); container.innerHTML = "";
-            const today = new Date(); 
-            // Tarihi sadece gün bazlı karşılaştırmak için saatleri sıfırla
-            today.setHours(0,0,0,0);
+            const today = new Date(); today.setHours(0,0,0,0);
 
             weeks.forEach(w => {
                 if(w.type !== 'Normal') return;
                 const el = document.createElement('div');
                 let isPast = false;
-                
-                // Tarih kontrolü (GG.AA.YYYY formatı için düzeltilmiş)
                 if(w.date) {
-                    const p = w.date.split('.'); // ["05", "02", "2026"]
-                    // Ay 0-indeksli olduğu için -1 yapıyoruz
-                    const wDate = new Date(p[2], p[1]-1, p[0]);
+                    const p = w.date.split('.');
+                    const wDate = new Date(`${p[2]}-${p[1]}-${p[0]}`); // FIX: YYYY-MM-DD
                     if(wDate < today) isPast = true;
                 }
-                
                 const isUnlocked = unlockedWeeks.includes(w.weekNo);
                 const lockedState = isPast && !isUnlocked;
 
@@ -419,42 +432,31 @@
                 `;
 
                 el.onclick = async () => {
-                    // Önce UI reset
+                    // RESET VIEW
                     document.getElementById('session-controls').classList.add('hidden');
                     document.getElementById('manual-add-section').classList.add('hidden');
                     
-                    // Kilitli ise şifre sor
-                    if(lockedState) {
-                        const p = prompt("Hafta kilidini açmak için şifre:");
-                        if(p === realAdminPass) { 
-                            unlockedWeeks.push(w.weekNo); 
-                            renderWeeksList(weeks); // Listeyi yenile ki kilit açılsın
-                            
-                            // Hemen ardından o haftanın detaylarını yükle
-                            document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
-                            selectedWeekNo = w.weekNo;
-                            document.getElementById('week-detail-view').classList.remove('hidden');
-                            const attendees = await loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
-                            renderManualList(attendees);
-                        } else {
-                            alert("Hatalı Şifre");
-                        }
-                        return;
-                    }
-
-                    // Kilitli değil (Gelecek veya Açılmış Geçmiş)
                     document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
                     el.classList.add('active');
                     selectedWeekNo = w.weekNo;
 
                     document.getElementById('week-detail-view').classList.remove('hidden');
+                    // Always load attendees first
                     const attendees = await loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
 
-                    if(isPast || isUnlocked) {
-                        // Geçmiş ve açık ise Manuel Ekle
-                        renderManualList(attendees);
+                    // LOGIC
+                    if(lockedState) {
+                        const p = prompt("Hafta kilidini açmak için şifre:");
+                        if(p === realAdminPass) { 
+                            unlockedWeeks.push(w.weekNo); 
+                            renderWeeksList(weeks); // Refresh icons
+                            renderManualList(attendees); // Show manual list
+                        } else alert("Hatalı Şifre");
+                    } else if(isPast || isUnlocked) {
+                        // Past week (unlocked or just viewed) -> Show Manual
+                        if(isUnlocked) renderManualList(attendees);
                     } else {
-                        // Gelecek ise Oturum Başlat
+                        // Future/Today -> Show Session Start
                         document.getElementById('session-controls').classList.remove('hidden');
                         updateHoursDropdown(w);
                     }
@@ -479,7 +481,7 @@
                         row.innerHTML = `<span><b>${l.studentId}</b> ${l.name}</span><span>${l.hours} Saat</span>`;
                         cont.appendChild(row);
                     });
-                    return res.logs.map(l => l.studentId.toString()); // Return IDs for filtering
+                    return res.logs.map(l => l.studentId.toString());
                 }
             } catch(e) { cont.innerHTML = "Hata"; }
             return [];
@@ -488,7 +490,6 @@
         function renderManualList(presentIds) {
             document.getElementById('manual-add-section').classList.remove('hidden');
             const list = document.getElementById('manual-add-list'); list.innerHTML = "";
-            
             const absentStudents = cData.students.filter(s => !presentIds.includes(s.id.toString()));
             
             if(absentStudents.length === 0) {
@@ -535,7 +536,7 @@
                     document.getElementById('qr-cover').classList.add('hidden');
                     
                     const q=document.getElementById('qrcode'); q.innerHTML=""; 
-                    new QRCode(q, {text:currCourse, width:600, height:600}); // HUGE QR FOR PC
+                    new QRCode(q, {text:currCourse, width:600, height:600}); 
                     
                     let dur=parseInt(document.getElementById('setQrTime').value)||15; 
                     const disp=document.getElementById('countdownDisplay');
