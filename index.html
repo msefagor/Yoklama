@@ -23,100 +23,87 @@
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
         @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
+        /* ANIMATED PROFESSIONAL BACKGROUND (For Fullscreen Modes) */
+        .animated-gradient-bg {
+            background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #240b36, #c31432);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         /* FULLSCREEN OVERLAY */
         .fullscreen-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 9999;
+            z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            backdrop-filter: blur(15px); animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s;
         }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- DYNAMIC SESSION LAYOUT (PC OPTIMIZED) --- */
-        .fs-session-container {
-            display: flex; flex-direction: row; /* YANYANA */
-            width: 100%; height: 100%; padding: 40px; box-sizing: border-box;
-            gap: 40px; /* Boşluk */
-        }
-        
-        /* SOL TARAF: LİSTE */
-        .fs-list-area {
-            flex: 0 0 350px; /* Sabit Genişlik */
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 20px;
-            display: flex; flex-direction: column;
+        /* STATIC QR SPECIFIC */
+        #fs-static-qr .qr-content {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; align-items: center;
+        }
+        /* Make Static QR Huge */
+        #static-qrcode img {
+            width: 70vh !important; height: 70vh !important; /* Screen Height Based */
+            max-width: 800px; max-height: 800px;
+            border: 10px solid white; border-radius: 20px;
+        }
+
+        /* DYNAMIC SESSION LAYOUT */
+        .fs-session-container {
+            display: flex; flex-direction: row; width: 100%; height: 100%; padding: 40px; box-sizing: border-box; gap: 40px;
+        }
+        .fs-list-area {
+            flex: 0 0 350px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px; padding: 20px; display: flex; flex-direction: column; backdrop-filter: blur(20px);
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .fs-list-header {
-            font-size: 20px; font-weight: bold; margin-bottom: 20px; 
-            padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2);
-            color: #00f260;
-        }
-        .fs-list-content {
-            flex: 1; overflow-y: auto; 
-        }
+        .fs-list-header { font-size: 20px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); color: #00f260; }
+        .fs-list-content { flex: 1; overflow-y: auto; }
         .live-student-item {
-            background: rgba(255,255,255,0.08);
-            margin-bottom: 10px; padding: 15px; border-radius: 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            animation: slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.08); margin-bottom: 10px; padding: 15px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center; animation: slideInLeft 0.4s; border: 1px solid rgba(255,255,255,0.05);
         }
         @keyframes slideInLeft { from { opacity:0; transform:translateX(-30px); } to { opacity:1; transform:translateX(0); } }
 
-        /* SAĞ TARAF: KAREKOD */
         .fs-qr-area {
-            flex: 1; /* Kalan tüm alan */
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(255, 255, 255, 0.02); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.05); position: relative;
         }
-        #qrcode img {
-            width: 100% !important; height: auto !important; /* Responsive ama büyük */
-            max-width: 65vh; /* Yüksekliğe göre sınırla */
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(0, 242, 96, 0.2);
-            border: 10px solid white;
-        }
-        
-        .qr-cover {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            border-radius: 30px; color: white; z-index: 10;
-        }
+        #qrcode img { width: 100% !important; height: auto !important; max-width: 60vh; border-radius: 20px; box-shadow: 0 0 50px rgba(0, 242, 96, 0.2); border: 10px solid white; }
+        .qr-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 30px; color: white; z-index: 10; }
 
         /* WEEK ITEMS STYLING */
-        .week-item { 
-            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; 
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; 
-            cursor: pointer; border: 1px solid transparent; transition: 0.2s; position: relative; 
-        }
+        .week-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
         .week-item.active { background: rgba(0, 242, 96, 0.2); border-color: #00f260; }
         
-        /* PASİF HAFTA STİLİ */
+        /* MADDE 1: TAMAMLANAN HAFTALAR SOLUK */
         .week-item.locked { 
-            opacity: 0.5; /* Daha sönük */
-            background: rgba(0,0,0,0.2); /* Daha koyu */
-            border-color: rgba(255,255,255,0.05);
+            opacity: 0.4; /* İyice soluk */
+            filter: grayscale(80%); /* Renksiz */
+            background: rgba(0,0,0,0.3); 
         }
-        .week-item.unlocked-past {
-            opacity: 1;
-            background: rgba(255, 206, 86, 0.1); /* Hafif sarımsı, düzenlenebilir */
-            border-color: rgba(255, 206, 86, 0.5);
-        }
+        .week-item.unlocked-past { opacity: 1; filter: none; background: rgba(255, 206, 86, 0.1); border-color: rgba(255, 206, 86, 0.5); }
 
-        /* --- GENERIC UI --- */
+        /* LOADER */
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); z-index: 10000; display: flex; justify-content: center; align-items: center; }
         .loader-content { text-align: center; }
         .spinner { width: 60px; height: 60px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.1); border-top-color: #00f260; border-right-color: #0575E6; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* UI GENERICS */
         .screen { display: none; flex-direction: column; padding: 20px; padding-top: 60px; min-height: 100vh; box-sizing: border-box; align-items: center; padding-bottom: 80px; }
         .screen.active { display: flex; }
         .glass-card { background: var(--glass-bg); backdrop-filter: blur(25px); border: var(--glass-border); border-radius: 30px; padding: 30px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
@@ -167,8 +154,17 @@
         .week-row-glass { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
         .week-row-glass input, .week-row-glass select { margin: 0; padding: 10px; font-size: 13px; background: rgba(0,0,0,0.2); border: none; }
         
-        /* BOTTOM LIST */
-        #week-attendees-container { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; }
+        /* MANUAL ADD SECTION */
+        #manual-add-section { 
+            margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.2); 
+            padding-top: 20px; text-align: left; 
+        }
+        .manual-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,69,58,0.1); /* Hafif Kırmızı */
+            padding: 10px; border-radius: 10px; margin-bottom: 5px;
+            border: 1px solid rgba(255,69,58,0.2);
+        }
     </style>
 </head>
 <body>
@@ -185,22 +181,21 @@
         </div>
     </div>
 
-    <div id="fs-static-qr" class="fullscreen-overlay hidden">
-        <div class="glass-card" style="background:white; color:#333;">
-            <h3>Derse Giriş Kodu</h3>
+    <div id="fs-static-qr" class="fullscreen-overlay animated-gradient-bg hidden">
+        <div class="qr-content" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); padding:40px; border-radius:40px; border:1px solid rgba(255,255,255,0.2); text-align:center;">
+            <h2 style="margin-top:0;">Derse Giriş Kodu</h2>
             <div id="static-qrcode"></div>
-            <button class="action-btn secondary" style="background:#eee; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
+            <p style="font-size:20px; margin-top:20px;">Öğrenciler için sabit bağlantı.</p>
+            <button class="action-btn secondary" style="width:200px; background:#fff; color:#333;" onclick="document.getElementById('fs-static-qr').classList.add('hidden')">Kapat</button>
         </div>
     </div>
 
-    <div id="fs-dynamic-session" class="fullscreen-overlay hidden">
+    <div id="fs-dynamic-session" class="fullscreen-overlay animated-gradient-bg hidden">
         <div class="fs-session-container">
             <div class="fs-list-area">
                 <div class="fs-list-header"><i class="fas fa-users"></i> Anlık Katılım</div>
-                <div id="live-student-list" class="fs-list-content">
-                    </div>
+                <div id="live-student-list" class="fs-list-content"></div>
             </div>
-
             <div class="fs-qr-area">
                 <div style="position:relative;">
                     <div id="qrcode"></div>
@@ -210,21 +205,10 @@
                         <p>Liste güncellenmeye devam ediyor...</p>
                     </div>
                 </div>
-                
                 <div id="countdownDisplay" style="font-size:100px; font-weight:800; color:#00f260; margin-top:20px; text-shadow: 0 0 30px rgba(0,242,96,0.5);">--</div>
                 <p style="font-size:20px; opacity:0.8; font-weight:bold;">Saniye Kaldı</p>
-                
                 <button class="action-btn secondary" style="width:250px; background:rgba(255,65,108,0.2); border:1px solid rgba(255,65,108,0.5);" onclick="resetScanUI()">OTURUMU KAPAT</button>
             </div>
-        </div>
-    </div>
-
-    <div id="fs-manual-add" class="fullscreen-overlay hidden">
-        <div class="glass-card" style="width:90%; max-width:500px; max-height:80vh; overflow-y:auto;">
-            <h3>Manuel Ekleme</h3>
-            <p style="opacity:0.7; font-size:12px;">Geçmiş hafta için öğrenci seçin:</p>
-            <div id="manual-student-list" style="text-align:left;"></div>
-            <button class="action-btn secondary" onclick="document.getElementById('fs-manual-add').classList.add('hidden')">Kapat</button>
         </div>
     </div>
 
@@ -232,7 +216,6 @@
         <div id="stu-res-card" class="glass-card"></div>
         <button class="action-btn" style="width:200px;" onclick="document.getElementById('fs-student-result').classList.add('hidden'); nav('screen-home');">Tamam</button>
     </div>
-
     <div id="fs-student-details" class="fullscreen-overlay hidden">
         <div class="glass-card" style="width:90%; max-width:400px; max-height:70vh; overflow-y:auto;">
             <h3>Devamsızlık Detayları</h3>
@@ -291,11 +274,16 @@
                         <button class="action-btn secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit Karekod</button>
                     </div>
 
-                    <div id="week-detail-view" class="hidden">
+                    <div id="week-detail-view" class="hidden" style="margin-top:20px;">
                         <div id="week-attendees-container">
-                            <label class="input-label" style="text-align:center; margin-bottom:10px;">📋 Bu Hafta Katılanlar</label>
-                            <div id="week-attendees-list" style="text-align:left; max-height:200px; overflow-y:auto;"></div>
+                            <label class="input-label" style="text-align:center; margin-bottom:10px; color:#00f260;">📋 Bu Hafta Katılanlar</label>
+                            <div id="week-attendees-list" style="text-align:left; max-height:200px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:15px; padding:10px;"></div>
                         </div>
+                    </div>
+
+                    <div id="manual-add-section" class="hidden">
+                        <label class="input-label" style="text-align:center; margin-bottom:10px; color:#FF416C;">🚫 Bu Hafta Gelmeyenler (Manuel Ekle)</label>
+                        <div id="manual-add-list" style="max-height:300px; overflow-y:auto;"></div>
                     </div>
                 </div>
             </div>
@@ -367,7 +355,7 @@
             document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
             document.getElementById('tab-'+t).classList.add('active'); event.target.classList.add('active');
         }
-        function showLoader(msg) { document.getElementById('loader').classList.remove('hidden'); document.getElementById('loaderMsg').innerText = msg; }
+        function showLoader(msg) { document.getElementById('loader').classList.remove('hidden'); document.getElementById('loaderMsg').innerText = msg || "Lütfen Bekleyiniz."; }
         function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
         function showToast(msg) {
             const c = document.getElementById('toast-container'); const e = document.createElement('div'); e.className='toast'; e.innerText=msg; c.appendChild(e);
@@ -413,6 +401,7 @@
                 setTab('scan'); selectedWeekNo = null; 
                 document.getElementById('session-controls').classList.add('hidden');
                 document.getElementById('week-detail-view').classList.add('hidden');
+                document.getElementById('manual-add-section').classList.add('hidden');
             }
         }
         function closeCourse() { document.getElementById('courseListPanel').classList.remove('hidden'); document.getElementById('courseDetailPanel').classList.add('hidden'); }
@@ -436,7 +425,7 @@
                 
                 let icon = '<i class="fas fa-chevron-right"></i>';
                 if(lockedState) icon = '<i class="fas fa-lock" style="color:#FF416C"></i>';
-                else if(isUnlocked) icon = '<i class="fas fa-user-plus" style="color:#00f260; font-size:18px;"></i> <span style="font-size:12px; margin-left:5px;">Ekle</span>';
+                else if(isUnlocked) icon = '<i class="fas fa-user-plus" style="color:#00f260; font-size:18px;"></i>';
 
                 el.innerHTML = `
                     <div style="text-align:left;">
@@ -447,29 +436,30 @@
                 `;
 
                 el.onclick = async () => {
-                    // 1. UNLOCK LOGIC
-                    if(lockedState) {
-                        const p = prompt("Kilit Şifresi:");
-                        if(p === realAdminPass) { unlockedWeeks.push(w.weekNo); renderWeeksList(weeks); } 
-                        else alert("Hatalı Şifre");
-                        return;
-                    }
-
-                    // 2. MANUAL ADD LOGIC
-                    if(isUnlocked) {
-                        openManualAdd(w.weekNo);
-                        return;
-                    }
-
-                    // 3. NORMAL SELECTION LOGIC
+                    // RESET VIEWS
+                    document.getElementById('session-controls').classList.add('hidden');
+                    document.getElementById('manual-add-section').classList.add('hidden');
                     document.querySelectorAll('.week-item').forEach(i => i.classList.remove('active'));
                     el.classList.add('active');
                     selectedWeekNo = w.weekNo;
 
                     document.getElementById('week-detail-view').classList.remove('hidden');
-                    loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
+                    // Always load attendees first
+                    const attendees = await loadWeekAttendees(currCourse, w.weekNo, 'week-attendees-list');
 
-                    if(!isPast) {
+                    // LOGIC
+                    if(lockedState) {
+                        const p = prompt("Hafta kilidini açmak için şifre:");
+                        if(p === realAdminPass) { 
+                            unlockedWeeks.push(w.weekNo); 
+                            renderWeeksList(weeks); 
+                            renderManualList(attendees); // Show manual list
+                        } else alert("Hatalı Şifre");
+                    } else if(isPast || isUnlocked) {
+                        // If it's past (and unlocked) OR just past, show manual add if unlocked
+                        if(isUnlocked) renderManualList(attendees);
+                    } else {
+                        // Future/Today
                         document.getElementById('session-controls').classList.remove('hidden');
                         updateHoursDropdown(w);
                     }
@@ -486,7 +476,7 @@
                 const res = await req.json();
                 if(res.success) {
                     cont.innerHTML = "";
-                    if(res.logs.length === 0) cont.innerHTML = "<div style='opacity:0.5; font-size:12px;'>Kayıt yok.</div>";
+                    if(res.logs.length === 0) cont.innerHTML = "<div style='opacity:0.5; font-size:12px; text-align:center;'>Kayıt yok.</div>";
                     res.logs.sort((a,b)=>a.studentId - b.studentId);
                     res.logs.forEach(l => {
                         const row = document.createElement('div');
@@ -494,17 +484,28 @@
                         row.innerHTML = `<span><b>${l.studentId}</b> ${l.name}</span><span>${l.hours} Saat</span>`;
                         cont.appendChild(row);
                     });
+                    return res.logs.map(l => l.studentId.toString()); // Return IDs for filtering
                 }
             } catch(e) { cont.innerHTML = "Hata"; }
+            return [];
         }
 
-        function openManualAdd(weekNo) {
-            document.getElementById('fs-manual-add').classList.remove('hidden');
-            const list = document.getElementById('manual-student-list'); list.innerHTML = "";
-            cData.students.sort((a,b)=>a.name.localeCompare(b.name)).forEach(s => {
+        function renderManualList(presentIds) {
+            document.getElementById('manual-add-section').classList.remove('hidden');
+            const list = document.getElementById('manual-add-list'); list.innerHTML = "";
+            
+            // Filter absent students
+            const absentStudents = cData.students.filter(s => !presentIds.includes(s.id.toString()));
+            
+            if(absentStudents.length === 0) {
+                list.innerHTML = "<div style='text-align:center; opacity:0.7; font-size:13px;'>Herkes katılmış.</div>";
+                return;
+            }
+
+            absentStudents.sort((a,b)=>a.name.localeCompare(b.name)).forEach(s => {
                 const item = document.createElement('div');
-                item.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid rgba(255,255,255,0.1);";
-                item.innerHTML = `<div><b>${s.name}</b><br><small>${s.id}</small></div><button class="action-btn" style="width:auto; padding:8px 15px; font-size:12px; margin:0;" onclick="submitManual('${s.id}', ${weekNo}, this)">Ekle</button>`;
+                item.className = "manual-item";
+                item.innerHTML = `<div><b>${s.name}</b><br><small>${s.id}</small></div><button class="action-btn" style="width:auto; padding:5px 15px; font-size:12px; margin:0;" onclick="submitManual('${s.id}', selectedWeekNo, this)">Ekle</button>`;
                 list.appendChild(item);
             });
         }
@@ -540,26 +541,20 @@
                     document.getElementById('qr-cover').classList.add('hidden');
                     
                     const q=document.getElementById('qrcode'); q.innerHTML=""; 
-                    new QRCode(q, {text:currCourse, width:500, height:500}); // HUGE QR
+                    new QRCode(q, {text:currCourse, width:600, height:600}); // HUGE QR FOR PC
                     
                     let dur=parseInt(document.getElementById('setQrTime').value)||15; 
                     const disp=document.getElementById('countdownDisplay');
                     if(countdownInt) clearInterval(countdownInt); 
                     disp.innerText=dur;
                     
-                    // COUNTDOWN
                     countdownInt=setInterval(()=>{ 
                         dur--; disp.innerText=dur; 
-                        if(dur<=0){ 
-                            clearInterval(countdownInt); 
-                            document.getElementById('qr-cover').classList.remove('hidden');
-                        } 
+                        if(dur<=0){ clearInterval(countdownInt); document.getElementById('qr-cover').classList.remove('hidden'); } 
                     }, 1000);
 
-                    // LIVE LIST
                     if(liveListInt) clearInterval(liveListInt);
-                    updateLiveList();
-                    liveListInt = setInterval(updateLiveList, 3000);
+                    updateLiveList(); liveListInt = setInterval(updateLiveList, 3000);
                 }
             },()=>{hideLoader(); showToast("GPS Hatası");},{enableHighAccuracy:true});
         }
@@ -567,19 +562,14 @@
         async function updateLiveList() {
             const listContainer = document.getElementById('live-student-list');
             try {
-                // Fetch silently
-                const req = await fetch(API_URL, {method:'POST', body:JSON.stringify({
-                    action:'get_week_logs', courseId:currCourse, weekNo:selectedWeekNo
-                })});
+                const req = await fetch(API_URL, {method:'POST', body:JSON.stringify({action:'get_week_logs', courseId:currCourse, weekNo:selectedWeekNo})});
                 const res = await req.json();
                 if(res.success) {
                     listContainer.innerHTML = "";
                     res.logs.forEach(l => {
-                        const div = document.createElement('div');
-                        div.className = "live-student-item";
+                        const div = document.createElement('div'); div.className = "live-student-item";
                         const t = new Date(l.time);
-                        const timeStr = t.getHours() + ":" + (t.getMinutes()<10?'0':'') + t.getMinutes();
-                        div.innerHTML = `<span>${l.name}</span><span style="opacity:0.6;">${timeStr}</span>`;
+                        div.innerHTML = `<span>${l.name}</span><span style="opacity:0.6;">${t.getHours()}:${t.getMinutes()<10?'0':''}${t.getMinutes()}</span>`;
                         listContainer.appendChild(div);
                     });
                 }
@@ -592,7 +582,7 @@
             document.getElementById('fs-dynamic-session').classList.add('hidden'); 
             loadCourse(currCourse);
         }
-        function showStaticQR() { document.getElementById('fs-static-qr').classList.remove('hidden'); const d = document.getElementById('static-qrcode'); d.innerHTML=""; new QRCode(d, {text:SITE_URL, width:300, height:300}); }
+        function showStaticQR() { document.getElementById('fs-static-qr').classList.remove('hidden'); const d = document.getElementById('static-qrcode'); d.innerHTML=""; new QRCode(d, {text:SITE_URL, width:600, height:600}); }
 
         /* STUDENT */
         async function checkStudentName() {
@@ -621,12 +611,10 @@
                         const modal = document.getElementById('fs-student-result');
                         const card = document.getElementById('stu-res-card');
                         const s = res.stat;
-                        
                         let theme = ""; let title = "";
                         if(s.absent === 0) { theme = "stat-yellow"; title = "Devamsızlık Hakkınız Var"; }
                         else if(s.remaining <= 0) { theme = "stat-red"; title = "Devamsızlık Hakkınız Yok"; }
                         else { theme = "stat-green"; title = "Devamsızlık Hakkınız Var"; }
-
                         card.onclick = () => showStudentDetails();
                         card.innerHTML = `<h2>${title}</h2><div class="stat-card ${theme}"><small>Toplam Devamsızlık</small><span class="stat-val">${s.absent} Saat</span><small>Maksimum Hak: ${s.max}</small></div><div class="stat-card" style="margin-top:10px; background:rgba(255,255,255,0.1);"><small>Kalan Hak</small><span class="stat-val">${s.remaining} Saat</span></div><div class="click-hint">Detaylar için tıklayınız</div>`;
                         modal.classList.remove('hidden');
