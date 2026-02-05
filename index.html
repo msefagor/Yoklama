@@ -16,8 +16,8 @@
             --glass-border: 1px solid rgba(255, 255, 255, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             --accent-grad: linear-gradient(135deg, #00f260 0%, #0575E6 100%);
-            --btn-grad-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Öğrenci */
-            --btn-grad-2: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%); /* Hoca */
+            --btn-grad-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --btn-grad-2: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
             --text: #ffffff;
         }
 
@@ -36,7 +36,7 @@
         .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
         @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
-        /* --- LOADER --- */
+        /* LOADER */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
@@ -45,22 +45,22 @@
             display: flex; justify-content: center; align-items: center;
         }
         .loader-content {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             padding: 40px; border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
             text-align: center;
             animation: popIn 0.3s ease;
         }
         .spinner {
             width: 60px; height: 60px; border-radius: 50%;
-            border: 4px solid transparent; border-top-color: #00f260; border-right-color: #0575E6;
+            border: 4px solid rgba(255,255,255,0.1); border-top-color: #00f260; border-right-color: #0575E6;
             animation: spin 1s linear infinite; margin: 0 auto 20px auto;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- UI ELEMENTS --- */
-        .screen { display: none; flex-direction: column; padding: 20px; padding-top: 80px; min-height: 100vh; box-sizing: border-box; align-items: center; }
+        /* MAIN UI */
+        .screen { display: none; flex-direction: column; padding: 20px; padding-top: 60px; min-height: 100vh; box-sizing: border-box; align-items: center; padding-bottom: 80px; }
         .screen.active { display: flex; }
 
         .glass-card {
@@ -77,66 +77,78 @@
         }
         @keyframes slideUp { from { transform: translateY(50px); opacity:0; } to { transform: translateY(0); opacity:1; } }
 
-        h1 { font-size: 32px; font-weight: 800; background: linear-gradient(to right, #fff, #a1c4fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
-        p.subtitle { opacity: 0.6; font-size: 14px; margin-bottom: 30px; letter-spacing: 0.5px; }
+        h1 { font-size: 32px; font-weight: 800; background: linear-gradient(to right, #fff, #a1c4fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+        
+        /* CREDITS BOX */
+        .credits-box {
+            margin-top: auto; padding: 10px 20px;
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px; font-size: 12px; color: rgba(255,255,255,0.7);
+            display: flex; align-items: center; gap: 8px;
+            backdrop-filter: blur(5px);
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        }
+        .credits-name { color: #00f260; font-weight: 700; letter-spacing: 0.5px; }
 
         input, select {
             width: 100%; padding: 18px; margin-bottom: 15px;
             background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px; color: white; font-size: 16px; outline: none; box-sizing: border-box;
             text-align: center; transition: 0.3s;
+            -webkit-appearance: none; appearance: none;
         }
-        input:focus { background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.4); }
-
-        /* --- NEW BUTTONS --- */
+        select { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
+        
         .main-btn {
             display: flex; align-items: center; justify-content: center; gap: 15px;
             width: 100%; padding: 20px; margin-bottom: 15px;
             border-radius: 22px; border: none; color: white;
             font-size: 18px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.2s;
         }
-        .main-btn:active { transform: scale(0.96); box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
+        .main-btn:active { transform: scale(0.96); }
         .btn-student { background: var(--btn-grad-1); border: 1px solid rgba(255,255,255,0.2); }
         .btn-admin { background: var(--btn-grad-2); border: 1px solid rgba(255,255,255,0.2); }
-        .btn-icon { font-size: 24px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 12px; }
-
+        
         .action-btn { background: var(--accent-grad); width: 100%; padding: 16px; border-radius: 18px; border: none; color: white; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; }
         .secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
 
-        /* --- COURSE LIST ITEM (NEW) --- */
         .course-item {
             display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 20px; border-radius: 20px; margin-bottom: 12px;
-            cursor: pointer; transition: 0.2s;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px; border-radius: 20px; margin-bottom: 12px; cursor: pointer;
         }
-        .course-item:active { background: rgba(255,255,255,0.15); transform: scale(0.98); }
         .c-code { font-size: 20px; font-weight: 800; color: #a1c4fd; text-shadow: 0 2px 10px rgba(161, 196, 253, 0.4); }
         .c-sep { width: 1px; height: 30px; background: rgba(255,255,255,0.2); margin: 0 15px; }
         .c-name { font-size: 15px; font-weight: 500; opacity: 0.9; text-align: right; flex: 1; }
 
-        /* --- STUDENT CONFIRMATION --- */
+        /* WEEKS LIST LIQUID STYLE */
+        .week-row-glass {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px; border-radius: 15px; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .week-row-glass input, .week-row-glass select {
+            margin: 0; padding: 10px; font-size: 13px; background: rgba(0,0,0,0.2); border: none;
+        }
+
         #student-confirm-area { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
-        #studentNameDisplay { font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #00f260; text-shadow: 0 0 20px rgba(0, 242, 96, 0.4); }
         .checkbox-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; cursor: pointer; }
-        .custom-checkbox { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .custom-checkbox { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.5); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
         .custom-checkbox.checked { background: #00f260; border-color: #00f260; }
         .custom-checkbox i { display: none; color: black; font-size: 14px; }
         .custom-checkbox.checked i { display: block; }
 
-        /* Other */
         .tab-nav { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 12px; color: #ddd; border:none; cursor: pointer; }
         .tab-btn.active { background: var(--accent-grad); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .tab-content { display: none; } .tab-content.active { display: block; }
         .hidden { display: none !important; }
 
-        #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 350px; pointer-events: none; }
+        #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 2000; width: 90%; max-width: 350px; pointer-events: none; }
         .toast { background: rgba(0,0,0,0.8); color: white; padding: 15px; border-radius: 15px; margin-top: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); animation: popIn 0.3s; pointer-events: auto; }
-        @keyframes popIn { from { transform: scale(0.8); opacity:0; } to { transform: scale(1); opacity:1; } }
+        
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; display:flex; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
     </style>
 </head>
 <body>
@@ -153,19 +165,20 @@
 
     <div id="toast-container"></div>
 
+    <div class="credits-box">
+        <i class="fas fa-code"></i> Sistem: <span class="credits-name">Muhammed Sefa GÖR</span>
+    </div>
+
     <div id="screen-home" class="screen active">
         <div class="glass-card" style="margin-top: 10vh;">
             <h1>Otonom Yoklama</h1>
-            <p class="subtitle">Bu sistem Muhammed Sefa GÖR tarafından yapılmıştır.</p>
             
             <button class="main-btn btn-student" onclick="nav('screen-student-login')">
-                <i class="fas fa-user-graduate btn-icon"></i>
-                <span>Öğrenci Girişi</span>
+                <i class="fas fa-user-graduate btn-icon"></i> <span>Öğrenci Girişi</span>
             </button>
             
             <button class="main-btn btn-admin" onclick="nav('screen-admin-login')">
-                <i class="fas fa-chalkboard-teacher btn-icon"></i>
-                <span>Akademisyen Girişi</span>
+                <i class="fas fa-chalkboard-teacher btn-icon"></i> <span>Akademisyen Girişi</span>
             </button>
         </div>
     </div>
@@ -203,6 +216,7 @@
 
                 <div id="scan-controls">
                     <button class="action-btn" onclick="startSession()"><i class="fas fa-satellite-dish"></i> Başlat</button>
+                    <button class="action-btn secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit Karekod</button>
                 </div>
 
                 <div id="qr-area" class="hidden">
@@ -232,23 +246,18 @@
     <div id="screen-student-login" class="screen">
         <div class="glass-card">
             <h2>Öğrenci Girişi</h2>
-            
             <div id="stu-step-1">
                 <input type="number" id="stuId" placeholder="Öğrenci Numarası">
                 <button class="action-btn" onclick="checkStudentName()">Giriş Yap</button>
             </div>
-
             <div id="stu-step-2" class="hidden">
-                <div id="studentNameDisplay"></div>
-                
+                <div id="studentNameDisplay" style="font-size:24px; font-weight:bold; color:#00f260; margin-bottom:15px;"></div>
                 <div class="checkbox-wrapper" onclick="toggleCheckbox()">
                     <div class="custom-checkbox" id="confirmCheck"><i class="fas fa-check"></i></div>
-                    <span style="font-size:14px;">Bilgilerimin doğru olduğunu kabul ediyorum.</span>
+                    <span style="font-size:14px;">Bilgilerim doğru.</span>
                 </div>
-
                 <button class="action-btn" id="btn-start-cam" style="opacity:0.5; pointer-events:none;" onclick="confirmAndStartCamera()">Kamerayı Aç</button>
             </div>
-
             <button class="action-btn secondary" onclick="nav('screen-home')">Geri</button>
         </div>
     </div>
@@ -261,20 +270,28 @@
         </div>
     </div>
 
+    <div id="static-qr-modal" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
+        <div class="glass-card" style="background:white; color:#333;" onclick="event.stopPropagation()">
+            <h3>Derse Giriş Kodu</h3>
+            <div id="static-qrcode"></div>
+            <p style="font-size:12px; color:#666; margin-top:10px;">Öğrenciler için sabit link.</p>
+            <button class="action-btn secondary" style="background:#eee; color:#333;" onclick="document.getElementById('static-qr-modal').classList.add('hidden')">Kapat</button>
+        </div>
+    </div>
+
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzBmSooewSbIZ0Qs406tS_p3V4Jjih_YVB1Mor795BGmoz0thJYjliAmlIhYPMBLbUu/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbwYobiteXSwPaeN_qCMsL7K2tMHuyrCu-CrlLGdw7sfY-y7Y_F49MU2oJPuL-nucSUA/exec"; 
+        const SITE_URL = "https://msefagor.github.io/Yoklama/"; 
 
         let currCourse = null; let cData = null; let qrScanner = null; let countdownInt = null; let isChecked = false;
 
         function nav(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            // Reset Student UI on Nav
             if(id === 'screen-student-login') {
                 document.getElementById('stu-step-1').classList.remove('hidden');
                 document.getElementById('stu-step-2').classList.add('hidden');
-                document.getElementById('stuId').value = "";
-                isChecked = false; updateCheckUI();
+                document.getElementById('stuId').value = ""; isChecked = false; updateCheckUI();
             }
         }
         function setTab(t) {
@@ -297,7 +314,7 @@
             } catch(e) { hideLoader(); showToast("Hata oluştu"); return null; }
         }
 
-        // --- ADMIN ---
+        /* --- ADMIN --- */
         async function adminLogin() {
             const pass = document.getElementById('adminPass').value;
             const res = await api({action:'admin_login', password:pass});
@@ -318,7 +335,6 @@
                 cData = res;
                 document.getElementById('courseListPanel').classList.add('hidden');
                 document.getElementById('courseDetailPanel').classList.remove('hidden');
-                // Populate UI...
                 document.getElementById('setWeeklyHours').value = res.settings.weeklyHours;
                 document.getElementById('setQrTime').value = res.settings.qrTime;
                 renderWeeksConfig(res.weeks); renderStudentList(res.students);
@@ -330,55 +346,69 @@
             }
         }
         function closeCourse() { document.getElementById('courseListPanel').classList.remove('hidden'); document.getElementById('courseDetailPanel').classList.add('hidden'); }
-        
-        // --- STUDENT LOGIC (UPDATED) ---
+
+        /* --- RENDER LOGIC --- */
+        function renderStudentList(list) {
+            const d=document.getElementById('studentList'); d.innerHTML="";
+            list.sort((a,b)=>a.remaining-b.remaining).forEach(s=>{
+                const r=document.createElement('div'); r.style.cssText="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; border:1px solid rgba(255,255,255,0.1);";
+                
+                let statusHTML = "";
+                if (s.remaining < 0) {
+                    statusHTML = `<span style="color:#FF416C; font-weight:bold;">KALDI (${Math.abs(s.remaining)}s aştı)</span>`;
+                    r.style.borderLeft = "4px solid #FF416C";
+                } else {
+                    statusHTML = `<span style="color:#00f260; font-weight:bold;">Kalan Hak: ${s.remaining}s</span>`;
+                    r.style.borderLeft = "4px solid #00f260";
+                }
+
+                r.innerHTML=`<div><b>${s.name}</b><br><small style="opacity:0.6;">${s.id}</small></div>
+                             <div style="text-align:right;">${statusHTML}<br><small style="opacity:0.6;">Devamsız: ${s.absent}s</small></div>`;
+                d.appendChild(r);
+            });
+        }
+
+        function renderWeeksConfig(weeks) {
+            const d=document.getElementById('weeksConfig'); d.innerHTML="";
+            weeks.forEach(w=>{
+                const r=document.createElement('div'); r.className = "week-row-glass";
+                r.innerHTML=`<div style="width:15%;">H.${w.weekNo}</div>
+                             <input value="${w.date}" type="date" id="d-${w.weekNo}" style="width:40%;"> 
+                             <select id="t-${w.weekNo}" style="width:35%;"><option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option><option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option><option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option><option value="Final" ${w.type=='Final'?'selected':''}>Final</option><option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option></select>`;
+                d.appendChild(r);
+            });
+        }
+
+        /* --- STUDENT FLOW --- */
         async function checkStudentName() {
-            const id = document.getElementById('stuId').value;
-            if(!id) return showToast("Numara giriniz");
-            
+            const id = document.getElementById('stuId').value; if(!id) return showToast("Numara giriniz");
             const res = await api({ action: 'get_student_name', studentId: id });
             if(res && res.success) {
                 document.getElementById('stu-step-1').classList.add('hidden');
                 document.getElementById('stu-step-2').classList.remove('hidden');
                 document.getElementById('studentNameDisplay').innerText = res.name;
-            } else {
-                showToast(res ? res.error : "Öğrenci Bulunamadı");
-            }
+            } else showToast("Öğrenci Bulunamadı");
         }
-
-        function toggleCheckbox() {
-            isChecked = !isChecked; updateCheckUI();
-        }
+        function toggleCheckbox() { isChecked = !isChecked; updateCheckUI(); }
         function updateCheckUI() {
-            const box = document.getElementById('confirmCheck');
-            const btn = document.getElementById('btn-start-cam');
-            if(isChecked) {
-                box.classList.add('checked'); btn.style.opacity='1'; btn.style.pointerEvents='auto';
-            } else {
-                box.classList.remove('checked'); btn.style.opacity='0.5'; btn.style.pointerEvents='none';
-            }
+            const b = document.getElementById('confirmCheck'); const btn = document.getElementById('btn-start-cam');
+            if(isChecked) { b.classList.add('checked'); btn.style.opacity='1'; btn.style.pointerEvents='auto'; } 
+            else { b.classList.remove('checked'); btn.style.opacity='0.5'; btn.style.pointerEvents='none'; }
         }
-
         function confirmAndStartCamera() {
-            const id = document.getElementById('stuId').value;
-            nav('screen-student-scan');
+            const id = document.getElementById('stuId').value; nav('screen-student-scan');
             qrScanner = new Html5Qrcode("reader");
             qrScanner.start({ facingMode: "environment" }, { fps:10, qrbox:250 }, async (txt) => {
-                qrScanner.stop();
-                showLoader("Konum Alınıyor...");
+                qrScanner.stop(); showLoader("Konum Alınıyor...");
                 navigator.geolocation.getCurrentPosition(async (pos) => {
-                    const res = await api({
-                        action: 'student_scan', studentId: id, qrCourseId: txt,
-                        lat: pos.coords.latitude, lng: pos.coords.longitude
-                    });
-                    if(res && res.success) { showToast(res.msg); nav('screen-home'); }
-                    else { showToast(res?res.error:"Hata"); nav('screen-home'); }
-                }, ()=>{ hideLoader(); showToast("GPS Açın!"); nav('screen-home'); }, {enableHighAccuracy:true});
+                    const res = await api({action:'student_scan', studentId:id, qrCourseId:txt, lat:pos.coords.latitude, lng:pos.coords.longitude});
+                    if(res && res.success) { showToast(res.msg); nav('screen-home'); } else { showToast(res?res.error:"Hata"); nav('screen-home'); }
+                }, ()=>{hideLoader(); showToast("GPS Açın!"); nav('screen-home');},{enableHighAccuracy:true});
             });
         }
         function stopScan() { if(qrScanner) qrScanner.stop(); nav('screen-home'); }
 
-        // --- HELPERS ---
+        /* --- HELPERS --- */
         function updateHoursDropdown() {
             const wSel = document.getElementById('sessWeek'); const hSel = document.getElementById('sessHours');
             const total = parseInt(document.getElementById('setWeeklyHours').value)||3;
@@ -386,22 +416,6 @@
             const rem = total - done; hSel.innerHTML="";
             if(rem<=0) { const o=document.createElement('option'); o.text="Tamamlandı"; hSel.add(o); }
             else for(let i=1; i<=rem; i++) { const o=document.createElement('option'); o.value=i; o.text=i+" Saat"; if(i===rem) o.selected=true; hSel.add(o); }
-        }
-        function renderStudentList(list) {
-            const d=document.getElementById('studentList'); d.innerHTML="";
-            list.sort((a,b)=>a.remaining-b.remaining).forEach(s=>{
-                const r=document.createElement('div'); r.style.cssText="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between;";
-                r.innerHTML=`<div><b>${s.name}</b><br><small>${s.id}</small></div><div style="text-align:right;"><b>${s.remaining<0?'KALDI':s.remaining+' Hak'}</b><br><small>Devamsız: ${s.absent}</small></div>`;
-                d.appendChild(r);
-            });
-        }
-        function renderWeeksConfig(weeks) {
-            const d=document.getElementById('weeksConfig'); d.innerHTML="";
-            weeks.forEach(w=>{
-                const r=document.createElement('div'); r.style.marginBottom="5px";
-                r.innerHTML=`<input value="${w.date}" type="date" id="d-${w.weekNo}" style="width:45%; display:inline-block;"> <select id="t-${w.weekNo}" style="width:45%; display:inline-block;"><option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option><option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option><option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option><option value="Final" ${w.type=='Final'?'selected':''}>Final</option><option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option></select>`;
-                d.appendChild(r);
-            });
         }
         async function saveSettings() {
             const weeks=[]; cData.weeks.forEach(w=>{ weeks.push({weekNo:w.weekNo, date:document.getElementById(`d-${w.weekNo}`).value, type:document.getElementById(`t-${w.weekNo}`).value})});
@@ -424,6 +438,10 @@
             },()=>{hideLoader(); showToast("GPS Hatası");},{enableHighAccuracy:true});
         }
         function resetScanUI() { if(countdownInt) clearInterval(countdownInt); document.getElementById('qr-area').classList.add('hidden'); document.getElementById('scan-controls').classList.remove('hidden'); loadCourse(currCourse); }
+        function showStaticQR() { 
+            document.getElementById('static-qr-modal').classList.remove('hidden'); 
+            const d = document.getElementById('static-qrcode'); d.innerHTML=""; new QRCode(d, {text:SITE_URL, width:200, height:200});
+        }
         function autoFillDates(){
             let c=new Date(document.getElementById('firstDate').value); if(isNaN(c))return;
             cData.weeks.forEach(w=>{ const i=document.getElementById(`d-${w.weekNo}`); if(i) i.value=c.toISOString().split('T')[0]; c.setDate(c.getDate()+7); });
@@ -431,4 +449,3 @@
     </script>
 </body>
 </html>
-
