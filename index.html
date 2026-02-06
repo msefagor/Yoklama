@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <style>
-        /* ... (CSS AYNEN KORUNDU) ... */
+        /* CSS kodlarınız aynen korunmuştur */
         :root { --bg-1: #0f2027; --bg-2: #203a43; --bg-3: #2c5364; --glass-bg: rgba(255, 255, 255, 0.08); --glass-border: 1px solid rgba(255, 255, 255, 0.1); --glass-highlight: rgba(255, 255, 255, 0.2); --accent-grad: linear-gradient(135deg, #00f260 0%, #0575E6 100%); --text: #ffffff; --sidebar-width: 280px; }
         body { margin: 0; padding: 0; background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3)); color: var(--text); font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; min-height: 100vh; overflow: hidden; }
         .blob { position: absolute; filter: blur(80px); z-index: -1; opacity: 0.5; animation: move 15s infinite alternate; }
@@ -332,7 +332,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxuVcQ4ZrYMDKESt83cM7IonGCdhqe-BV9sb4pbGW6Xavb5shn3PyIBMIIG3H8KYnnK/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbyhhO4c311udno6e-iBh2gKztQfyhTlTWZ2C4Qhpq4wtfSyllq6VOOL_FS9OaNcy63b/exec"; 
         const SITE_URL = "https://msefagor.github.io/Yoklama/"; 
 
         let currCourse = null; let cData = null; let qrScanner = null; 
@@ -349,7 +349,9 @@
             if(id === 'screen-student-login') {
                 document.getElementById('stu-step-1').classList.remove('hidden');
                 document.getElementById('stu-step-2').classList.add('hidden');
-                document.getElementById('stuId').value = ""; isChecked = false; updateCheckUI();
+                document.getElementById('stuId').value = ""; isChecked = false; 
+                document.getElementById('confirmCheck').classList.remove('checked');
+                document.getElementById('confirmCheck').querySelector('i').style.display="none";
             }
         }
 
@@ -363,6 +365,10 @@
 
         async function api(payload) {
             showLoader();
+            // Her kritik istekte adminPass parametresini ekle (Güvenlik katmanı)
+            if(["upload_pdf_data", "save_settings", "manual_attendance", "start_session"].includes(payload.action)){
+                payload.adminPass = realAdminPass;
+            }
             try {
                 const req = await fetch(API_URL, {method:'POST', body:JSON.stringify(payload)});
                 const res = await req.json(); hideLoader(); return res;
@@ -399,26 +405,24 @@
             if(panelName === 'courses') {
                 document.getElementById('courseListPanel').classList.remove('hidden');
                 document.getElementById('dash-title').innerText = "Dersler";
-                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
             } else if (panelName === 'upload') {
                 document.getElementById('uploadPanel').classList.remove('hidden');
                 document.getElementById('dash-title').innerText = "Veri Yükle (PDF)";
-                document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
             }
         }
 
-        /* --- PDF UPLOAD LOGIC --- */
         function handleFileSelect(input) {
             const file = input.files[0];
             if(file) {
                 document.getElementById('file-info').innerText = file.name;
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Extract base64 part only
                     uploadFileContent = e.target.result.split(',')[1];
                     document.getElementById('btnUpload').style.display = 'inline-flex';
                 };
-                reader.readAsDataURL(file); // MUST BE readAsDataURL for PDF binary transfer
+                reader.readAsDataURL(file);
             }
         }
 
@@ -468,6 +472,9 @@
             document.getElementById('tab-'+t).classList.remove('hidden');
             document.getElementById('tab-'+t).classList.add('active');
             document.querySelectorAll('.detail-tab-btn').forEach(b => b.classList.remove('active'));
+            if(t === 'scan') document.querySelectorAll('.detail-tab-btn')[0].classList.add('active');
+            if(t === 'list') document.querySelectorAll('.detail-tab-btn')[1].classList.add('active');
+            if(t === 'settings') document.querySelectorAll('.detail-tab-btn')[2].classList.add('active');
         }
 
         function renderWeeksList(weeks) {
@@ -637,7 +644,6 @@
         }
         function showStaticQR() { document.getElementById('fs-static-qr').classList.remove('hidden'); const d = document.getElementById('static-qrcode'); d.innerHTML=""; new QRCode(d, {text:SITE_URL, width:800, height:800}); }
 
-        /* --- STUDENT & UTILS --- */
         async function checkStudentName() {
             const id = document.getElementById('stuId').value; if(!id) return showToast("Numara giriniz");
             const res = await api({ action: 'get_student_name', studentId: id });
@@ -729,8 +735,8 @@
         function renderWeeksConfig(weeks) {
             const d=document.getElementById('weeksConfig'); d.innerHTML="";
             weeks.forEach(w=>{
-                const r=document.createElement('div'); r.className = "week-row-glass";
-                r.innerHTML=`<div style="width:15%;">H.${w.weekNo}</div><input value="${w.date}" type="date" id="d-${w.weekNo}" style="width:40%;"> <select id="t-${w.weekNo}" style="width:35%;"><option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option><option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option><option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option><option value="Final" ${w.type=='Final'?'selected':''}>Final</option><option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option></select>`;
+                const r=document.createElement('div'); r.style.cssText="background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:10px; display:flex; gap:10px; align-items:center;";
+                r.innerHTML=`<div style="width:15%;">H.${w.weekNo}</div><input value="${w.date}" type="date" id="d-${w.weekNo}" style="width:40%; margin:0;"> <select id="t-${w.weekNo}" style="width:35%; margin:0;"><option value="Normal" ${w.type=='Normal'?'selected':''}>Ders</option><option value="Tatil" ${w.type=='Tatil'?'selected':''}>Tatil</option><option value="Vize" ${w.type=='Vize'?'selected':''}>Vize</option><option value="Final" ${w.type=='Final'?'selected':''}>Final</option><option value="Bütünleme" ${w.type=='Bütünleme'?'selected':''}>Büt</option></select>`;
                 d.appendChild(r);
             });
         }
@@ -751,11 +757,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
