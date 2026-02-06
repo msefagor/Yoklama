@@ -45,16 +45,17 @@
         /* Ders Kartları Modernizasyon */
         .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .course-card { 
-            border: var(--glass-border); border-radius: 24px; padding: 30px; cursor: pointer; 
+            border: var(--glass-border); border-radius: 24px; padding: 25px; cursor: pointer; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             position: relative; overflow: hidden; display: flex; flex-direction: column; 
-            height: 180px; justify-content: space-between;
-            backdrop-filter: blur(10px);
+            height: 180px; justify-content: flex-start; align-items: flex-start;
+            backdrop-filter: blur(10px); gap: 12px;
         }
         .course-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .cc-code { font-size: 12px; font-weight: 700; opacity: 0.9; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 8px; align-self: flex-start; margin-bottom: 10px; }
-        .cc-name { font-size: 22px; font-weight: 800; line-height: 1.2; font-family: 'SF Pro Display', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .cc-icon { position: absolute; bottom: -15px; right: -15px; font-size: 90px; opacity: 0.15; transform: rotate(-10deg); transition: 0.3s; }
+        .cc-info-wrapper { z-index: 2; width: 100%; display: flex; flex-direction: column; gap: 8px; }
+        .cc-code { font-size: 11px; font-weight: 800; opacity: 0.9; letter-spacing: 1.5px; text-transform: uppercase; background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 8px; width: fit-content; }
+        .cc-name { font-size: 20px; font-weight: 700; line-height: 1.3; font-family: 'SF Pro Display', sans-serif; text-shadow: 0 2px 4px rgba(0,0,0,0.2); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .cc-icon { position: absolute; bottom: -15px; right: -15px; font-size: 90px; opacity: 0.15; transform: rotate(-10deg); transition: 0.3s; z-index: 1; }
         .course-card:hover .cc-icon { transform: rotate(0deg) scale(1.1); opacity: 0.25; }
 
         .detail-layout { display: flex; gap: 20px; height: 100%; overflow: hidden; }
@@ -73,7 +74,6 @@
         .week-item-desktop { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 15px; cursor: pointer; transition: 0.3s; margin-bottom: 12px; }
         .week-item-desktop:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
         .week-item-desktop.locked-exam { opacity: 0.8; cursor: not-allowed; border-left-width: 6px !important; }
-        .week-item-desktop.locked-exam:hover { transform: none; }
         
         .type-vize { border-left: 6px solid #FFCE56; background: rgba(255, 206, 86, 0.05); }
         .type-final { border-left: 6px solid #00f260; background: rgba(0, 242, 96, 0.05); }
@@ -122,6 +122,9 @@
         .custom-checkbox.checked { background: #00f260; border-color: #00f260; }
         .manual-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255, 65, 108, 0.1); border: 1px solid rgba(255, 65, 108, 0.2); border-radius: 10px; margin-bottom: 5px; }
         .click-hint { font-size: 12px; opacity: 0.6; margin-top: 10px; text-decoration: underline; }
+
+        /* Pasif Hafta Şifre Ekranı Glassmorphism */
+        #pass-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); z-index: 11000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 20px; }
     </style>
 </head>
 <body>
@@ -135,6 +138,18 @@
             <div class="spinner"></div>
             <h3>İşleniyor</h3>
             <p style="opacity:0.7;">Lütfen Bekleyiniz.</p>
+        </div>
+    </div>
+
+    <div id="pass-overlay" class="hidden">
+        <div class="mobile-card">
+            <h3>Güvenlik Doğrulaması</h3>
+            <p style="opacity:0.7; font-size:13px; margin-bottom:15px;">Hafta kilidini açmak için yönetici şifresini giriniz.</p>
+            <input type="password" id="weekUnlockPass" placeholder="Şifre" style="text-align:center; font-size:20px; letter-spacing:5px;">
+            <div style="display:flex; gap:10px;">
+                <button class="action-btn" style="flex:1;" onclick="confirmUnlock()">Onayla</button>
+                <button class="secondary action-btn" style="flex:1;" onclick="document.getElementById('pass-overlay').classList.add('hidden')">İptal</button>
+            </div>
         </div>
     </div>
 
@@ -188,15 +203,11 @@
             <div id="uploadPanel" class="hidden" style="max-width: 600px; margin: 0 auto;">
                 <div class="glass-card">
                     <h2 style="margin-bottom:20px;">Yeni Veri Yükleme (PDF)</h2>
-                    <p style="opacity:0.7; margin-bottom:20px;">
-                        Lütfen önce Ders Kodu ve Adını giriniz, ardından Sınıf Listesi PDF dosyasını yükleyiniz.
-                    </p>
-                    
+                    <p style="opacity:0.7; margin-bottom:20px;">Lütfen önce Ders Kodu ve Adını giriniz, ardından Sınıf Listesi PDF dosyasını yükleyiniz.</p>
                     <div style="margin-bottom:20px;">
                         <input type="text" id="manualCourseCode" placeholder="Ders Kodu (Örn: DHFS-522)" style="margin-bottom:10px;">
                         <input type="text" id="manualCourseName" placeholder="Ders Adı (Örn: Bilgisayar Destekli Tasarım)">
                     </div>
-
                     <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                         <i class="fas fa-file-pdf upload-icon" style="color:#FF416C;"></i>
                         <h3>PDF Dosyasını Buraya Sürükleyin</h3>
@@ -204,7 +215,6 @@
                         <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleFileSelect(this)">
                     </div>
                     <div id="file-info" style="margin-top:15px; font-size:14px; color:#00f260;"></div>
-                    
                     <button id="btnUpload" class="action-btn" style="width:100%; margin-top:20px; display:none;" onclick="uploadData()">
                         <i class="fas fa-check"></i> Veriyi İşle ve Kaydet
                     </button>
@@ -360,6 +370,7 @@
         let isChecked = false; let selectedWeekNo = null; let realAdminPass = ""; 
         let unlockedWeeks = []; let currentStudentDetails = [];
         let uploadFileContent = null;
+        let pendingWeek = null;
 
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('tr-TR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
@@ -399,55 +410,23 @@
             const p = document.getElementById('courseListPanel'); p.innerHTML = "";
             const grads = [
                 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)',
+                'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
                 'linear-gradient(135deg, #00f260 0%, #0575E6 100%)',
                 'linear-gradient(135deg, #2c3e50 0%, #000000 100%)',
-                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
             ];
             courses.forEach((c, idx) => {
                 const el = document.createElement('div'); el.className = "course-card";
                 el.style.background = grads[idx % grads.length];
-                el.innerHTML = `<div><span class="cc-code">${c.id}</span><div class="cc-name">${c.name}</div></div><div style="text-align:right;"><i class="fas fa-arrow-right" style="font-size:20px; opacity:0.8;"></i></div><i class="fas fa-book cc-icon"></i>`;
+                el.innerHTML = `
+                    <div class="cc-info-wrapper">
+                        <span class="cc-code">${c.id}</span>
+                        <div class="cc-name">${c.name}</div>
+                    </div>
+                    <i class="fas fa-book cc-icon"></i>
+                `;
                 el.onclick = () => loadCourse(c.id); p.appendChild(el);
             });
-        }
-
-        function showPanel(panelName) {
-            document.getElementById('courseListPanel').classList.add('hidden');
-            document.getElementById('courseDetailPanel').classList.add('hidden');
-            document.getElementById('uploadPanel').classList.add('hidden');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(panelName === 'courses') {
-                document.getElementById('courseListPanel').classList.remove('hidden');
-                document.getElementById('dash-title').innerText = "Dersler";
-                document.querySelectorAll('.nav-item')[0].classList.add('active');
-            } else if (panelName === 'upload') {
-                document.getElementById('uploadPanel').classList.remove('hidden');
-                document.getElementById('dash-title').innerText = "Veri Yükle (PDF)";
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-            }
-        }
-
-        function handleFileSelect(input) {
-            const file = input.files[0];
-            if(file) {
-                document.getElementById('file-info').innerText = file.name;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadFileContent = e.target.result.split(',')[1];
-                    document.getElementById('btnUpload').style.display = 'inline-flex';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function uploadData() {
-            const code = document.getElementById('manualCourseCode').value;
-            const name = document.getElementById('manualCourseName').value;
-            if(!code || !name || !uploadFileContent) return alert("Bilgileri kontrol edin.");
-            const res = await api({ action: 'upload_pdf_data', fileData: uploadFileContent, courseCode: code, courseName: name });
-            if(res && res.success) { alert(res.msg); location.reload(); } else { alert("Hata: " + (res ? res.error : "Bilinmiyor")); }
         }
 
         async function loadCourse(id) {
@@ -468,6 +447,7 @@
         function renderWeeksList(weeks) {
             const container = document.getElementById('weeks-list-container'); container.innerHTML = "";
             const today = new Date(); today.setHours(0,0,0,0);
+            const weeklyHours = parseInt(document.getElementById('setWeeklyHours').value) || 3;
 
             weeks.forEach(w => {
                 const el = document.createElement('div');
@@ -482,8 +462,11 @@
                     const p = w.date.split('-');
                     if(new Date(p[0], p[1]-1, p[2]) < today) isPast = true;
                 }
+                
+                // Tamamlanan hafta pasife çekilsin
+                const isCompleted = (w.completedHours || 0) >= weeklyHours;
                 const isUnlocked = unlockedWeeks.includes(w.weekNo);
-                const lockedState = isPast && !isUnlocked;
+                const lockedState = (isPast || isCompleted) && !isUnlocked;
 
                 el.className = `week-item-desktop ${typeClass} ${lockedState ? 'locked' : ''} ${isExam ? 'locked-exam' : ''} ${isUnlocked ? 'unlocked' : ''}`;
                 
@@ -494,17 +477,29 @@
                 el.innerHTML = `<div><b>${w.weekNo}. Hafta</b> <span style="opacity:0.6; font-size:13px; margin-left:10px;">${w.date||'-'} ${isExam ? '('+w.type+')' : ''}</span></div><div>${icon}</div>`;
 
                 if(!isExam) {
-                    el.onclick = async () => {
+                    el.onclick = () => {
                         selectedWeekNo = w.weekNo;
                         if(lockedState) {
-                            const p = prompt("Geçmiş hafta kilidini açmak için şifre:");
-                            if(p === realAdminPass) { unlockedWeeks.push(w.weekNo); renderWeeksList(weeks); openWeekFocus(w, true); } 
-                            else alert("Hatalı Şifre");
-                        } else { openWeekFocus(w, isPast || isUnlocked); }
+                            pendingWeek = w;
+                            document.getElementById('weekUnlockPass').value = "";
+                            document.getElementById('pass-overlay').classList.remove('hidden');
+                        } else { openWeekFocus(w, isPast || isUnlocked || isCompleted); }
                     };
                 }
                 container.appendChild(el);
             });
+        }
+
+        function confirmUnlock() {
+            const pass = document.getElementById('weekUnlockPass').value;
+            if(pass === realAdminPass) {
+                unlockedWeeks.push(pendingWeek.weekNo);
+                document.getElementById('pass-overlay').classList.add('hidden');
+                renderWeeksList(cData.weeks);
+                openWeekFocus(pendingWeek, true);
+            } else {
+                showToast("Şifre Hatalı");
+            }
         }
 
         async function openWeekFocus(week, showManual) {
@@ -663,6 +658,13 @@
 
         function renderStudentList(list) {
             const d=document.getElementById('studentList'); d.innerHTML="";
+            
+            // Sıralama Algoritması: Devamsızlık (çoktan aza), İsim (A'dan Z'ye)
+            list.sort((a, b) => {
+                if (b.absent !== a.absent) return b.absent - a.absent;
+                return a.name.localeCompare(b.name, 'tr');
+            });
+
             list.forEach(s=>{
                 const r=document.createElement('div'); r.style.cssText="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; border-left:5px solid "+(s.remaining<=0?"#FF416C":"#00f260");
                 r.innerHTML=`<div><b>${s.name}</b><br><small>${s.id}</small></div><div style="text-align:right;"><b>${s.remaining}s Kalan</b><br><small>${s.absent}s Devamsız</small></div>`;
@@ -679,6 +681,22 @@
             });
         }
 
+        async function showPanel(panelName) {
+            document.getElementById('courseListPanel').classList.add('hidden');
+            document.getElementById('courseDetailPanel').classList.add('hidden');
+            document.getElementById('uploadPanel').classList.add('hidden');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(panelName === 'courses') {
+                document.getElementById('courseListPanel').classList.remove('hidden');
+                document.getElementById('dash-title').innerText = "Dersler";
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (panelName === 'upload') {
+                document.getElementById('uploadPanel').classList.remove('hidden');
+                document.getElementById('dash-title').innerText = "Veri Yükle (PDF)";
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            }
+        }
+
         async function saveSettings() {
             const weeks=[]; cData.weeks.forEach(w=>{ weeks.push({weekNo:w.weekNo, date:document.getElementById(`d-${w.weekNo}`).value, type:document.getElementById(`t-${w.weekNo}`).value})});
             const res=await api({ action:'save_settings', courseId:currCourse, limitPct: document.getElementById('setLimitPct').value, weeklyHours:document.getElementById('setWeeklyHours').value, qrTime:document.getElementById('setQrTime').value, weeks:weeks });
@@ -688,6 +706,25 @@
         function autoFillDates(){
             let c=new Date(document.getElementById('firstDate').value); if(isNaN(c))return;
             cData.weeks.forEach(w=>{ const i=document.getElementById(`d-${w.weekNo}`); if(i) i.value=c.toISOString().split('T')[0]; c.setDate(c.getDate()+7); });
+        }
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if(file) {
+                document.getElementById('file-info').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadFileContent = e.target.result.split(',')[1];
+                    document.getElementById('btnUpload').style.display = 'inline-flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        async function uploadData() {
+            const code = document.getElementById('manualCourseCode').value;
+            const name = document.getElementById('manualCourseName').value;
+            if(!code || !name || !uploadFileContent) return alert("Bilgileri kontrol edin.");
+            const res = await api({ action: 'upload_pdf_data', fileData: uploadFileContent, courseCode: code, courseName: name });
+            if(res && res.success) { alert(res.msg); location.reload(); } else { alert("Hata: " + (res ? res.error : "Bilinmiyor")); }
         }
     </script>
 </body>
