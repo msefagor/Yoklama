@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Otonom Yoklama | Akademik Takip</title>
+    <title>Otonom Yoklama | Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript" defer></script>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
@@ -15,265 +15,223 @@
             --bg-1: #0f2027; --bg-2: #203a43; --bg-3: #2c5364; 
             --glass-bg: rgba(255, 255, 255, 0.08); 
             --glass-border: 1px solid rgba(255, 255, 255, 0.1); 
+            --accent-grad: linear-gradient(135deg, #00f260 0%, #0575E6 100%); 
             --text: #ffffff; 
-            --sidebar-width: 280px;
+            --sidebar-width: 280px; 
         }
 
-        body { 
-            margin: 0; padding: 0; 
-            background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3)); 
-            color: var(--text); 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            min-height: 100vh; overflow: hidden; 
-        }
-
-        /* Akışkan Arka Plan Blobları */
-        .blob { position: absolute; filter: blur(80px); z-index: -1; opacity: 0.4; animation: move 20s infinite alternate; }
-        .blob-1 { top: -10%; left: -10%; width: 60vw; height: 60vw; background: #0575E6; border-radius: 50%; }
-        .blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #00f260; border-radius: 50%; }
-        @keyframes move { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(50px, -50px) rotate(30deg); } }
+        body { margin: 0; padding: 0; background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3)); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; overflow: hidden; }
+        
+        /* Hareketli Arka Plan */
+        .blob { position: absolute; filter: blur(80px); z-index: -1; opacity: 0.5; animation: move 15s infinite alternate; }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #0575E6; border-radius: 50%; }
+        .blob-2 { bottom: -10%; right: -10%; width: 50vw; height: 50vw; background: #00f260; border-radius: 50%; }
+        @keyframes move { from { transform: translate(0,0); } to { transform: translate(30px, -30px); } }
 
         .hidden { display: none !important; }
-
-        /* Liquid Glass Kart Yapısı */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: var(--glass-border);
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-
+        #loader { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+        
         /* Modern Ders Kartları */
-        .course-card {
-            border-radius: 28px; padding: 30px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 190px; justify-content: space-between;
-            border: 1px solid rgba(255,255,255,0.2);
+        .course-card { 
+            border-radius: 24px; padding: 25px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            position: relative; overflow: hidden; display: flex; flex-direction: column; height: 180px; justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-        .course-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
-        .cc-code { font-size: 14px; font-weight: 400; opacity: 0.9; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-        .cc-name { font-size: 26px; font-weight: 800; line-height: 1.1; letter-spacing: -1px; }
+        .course-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .cc-code { font-size: 14px; opacity: 0.9; letter-spacing: 2px; text-transform: uppercase; font-weight: 400; }
+        .cc-name { font-size: 26px; font-weight: 800; line-height: 1.2; letter-spacing: -0.5px; }
 
-        /* Haftalık Akış ve Sınav Renkleri */
-        .week-item-desktop {
+        /* Haftalık Akış Tasarımı */
+        .week-item-desktop { 
             display: flex; justify-content: space-between; align-items: center; 
-            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); 
-            padding: 20px; border-radius: 20px; margin-bottom: 12px; transition: 0.3s;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            padding: 18px; border-radius: 16px; margin-bottom: 10px; cursor: pointer; transition: 0.3s;
         }
-        .week-item-desktop:hover { background: rgba(255,255,255,0.12); transform: scale(1.01); }
+        .week-item-desktop:hover { background: rgba(255,255,255,0.1); }
+        .week-vize { border-left: 6px solid #ffa502; background: rgba(255, 165, 2, 0.1); }
+        .week-final { border-left: 6px solid #ff4757; background: rgba(255, 71, 87, 0.1); }
+        .week-but { border-left: 6px solid #a55eea; background: rgba(165, 94, 234, 0.1); }
         .week-normal { border-left: 6px solid #00f260; }
-        .week-vize { border-left: 6px solid #ffa502; background: rgba(255, 165, 2, 0.15); }
-        .week-final { border-left: 6px solid #ff4757; background: rgba(255, 71, 87, 0.15); }
-        .week-but { border-left: 6px solid #a55eea; background: rgba(165, 94, 234, 0.15); }
         .week-tatil { border-left: 6px solid #747d8c; opacity: 0.6; }
 
-        .main-btn, .action-btn { 
-            background: var(--accent-grad); border: none; color: white; padding: 18px 34px; 
-            border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 16px;
-        }
-        .secondary { background: rgba(255,255,255,0.1) !important; color: white; border: 1px solid rgba(255,255,255,0.2); }
-
-        #loader { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+        .main-btn, .action-btn { background: var(--accent-grad); border: none; color: white; padding: 15px 30px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; justify-content: center; }
+        .secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); }
         
-        .dashboard-container { display: flex; width: 100vw; height: 100vh; }
-        .sidebar { width: var(--sidebar-width); background: rgba(0,0,0,0.25); backdrop-filter: blur(40px); border-right: var(--glass-border); padding: 35px; display: flex; flex-direction: column; transition: 0.3s; }
-        .sidebar.collapsed { width: 0; padding: 0; overflow: hidden; }
-        .nav-item { padding: 16px; border-radius: 14px; color: rgba(255,255,255,0.7); cursor: pointer; display: flex; align-items: center; gap: 15px; margin-bottom: 8px; font-weight: 600; }
-        .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
+        .dashboard-container { display: flex; width: 100vw; height: 100vh; overflow: hidden; }
+        .sidebar { width: var(--sidebar-width); background: rgba(255,255,255,0.03); border-right: var(--glass-border); backdrop-filter: blur(20px); display: flex; flex-direction: column; padding: 25px; transition: 0.3s; }
+        .main-content { flex: 1; overflow-y: auto; padding: 40px; position: relative; }
         
-        .main-content { flex: 1; padding: 45px; overflow-y: auto; }
-        .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-
-        input, select { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 14px; color: white; width: 100%; font-size: 16px; margin-bottom: 18px; outline: none; }
+        input, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 12px; color: white; width: 100%; box-sizing: border-box; outline: none; margin-bottom: 10px; font-family: inherit; }
         
-        #toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: rgba(30,30,30,0.9); color: white; padding: 18px 28px; border-radius: 16px; border-left: 6px solid #00f260; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity:0; } to { transform: translateX(0); opacity:1; } }
-
-        .fs-session-container { display: flex; width: 100%; height: 100%; padding: 30px; gap: 30px; }
-        .fs-list-area { width: 380px; background: rgba(0,0,0,0.4); backdrop-filter: blur(30px); border-radius: 28px; padding: 25px; display: flex; flex-direction: column; }
-        .fs-qr-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #qrcode img { border: 15px solid white; border-radius: 24px; max-height: 65vh; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: rgba(30,30,30,0.9); color: white; padding: 15px 25px; border-radius: 12px; border-left: 4px solid #00f260; backdrop-filter: blur(10px); z-index: 9999; }
     </style>
 </head>
 <body>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div id="toast-container"></div>
-    
+    <div class="credits-box" style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 11px; opacity: 0.5; z-index: 100;">Sistem: <span style="color:#00f260; font-weight:bold;">Muhammed Sefa GÖR</span></div>
+
     <div id="loader" class="hidden">
-        <div class="loader-content"><div class="spinner"></div><h3 style="margin-top:20px;">Sistem Hazırlanıyor...</h3></div>
-    </div>
-
-    <div id="screen-home" class="mobile-screen">
-        <div style="margin-bottom: 50px; text-align: center;">
-            <i class="fas fa-university" style="font-size: 70px; background: -webkit-linear-gradient(#00f260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px;"></i>
-            <h1 style="font-size: 44px; font-weight: 800; margin: 0; letter-spacing: -2px;">Otonom Yoklama</h1>
-            <p style="opacity: 0.6; font-size: 18px;">Akademik Takip & Yönetim</p>
-        </div>
-        <div class="mobile-card glass-card">
-            <button class="main-btn" style="width:100%;" onclick="nav('screen-student-login')"><i class="fas fa-user-graduate"></i> Öğrenci Girişi</button>
-            <button class="main-btn secondary" style="width:100%; margin-top:15px;" onclick="nav('screen-admin-login')"><i class="fas fa-chalkboard-teacher"></i> Akademisyen Paneli</button>
+        <div class="loader-content" style="text-align: center;">
+            <div class="spinner" style="width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #00f260; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px;"></div>
+            <h3 style="margin:0;">İşleniyor</h3>
         </div>
     </div>
 
-    <div id="screen-admin-login" class="mobile-screen hidden">
-        <div class="mobile-card glass-card">
-            <h2 style="font-weight: 800;">Güvenli Giriş</h2>
-            <p style="opacity:0.7; margin-bottom:25px;">Yönetici şifrenizi girerek oturum açın.</p>
-            <input type="password" id="adminPass" placeholder="••••••••">
-            <button class="action-btn" style="width:100%;" onclick="adminLogin()">Oturum Aç</button>
-            <button class="action-btn secondary" style="width:100%; margin-top:10px;" onclick="nav('screen-home')">Geri Dön</button>
+    <div id="screen-home" class="mobile-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <i class="fas fa-university" style="font-size: 60px; margin-bottom: 20px; background: -webkit-linear-gradient(#00f260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h1 style="font-size: 40px; margin: 0; font-weight: 800;">Otonom Yoklama</h1>
+            <p style="opacity: 0.6;">Akademik Takip Sistemi</p>
+        </div>
+        <div class="mobile-card" style="background: var(--glass-bg); padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; backdrop-filter: blur(20px); border: var(--glass-border);">
+            <button class="main-btn" style="width:100%; background: linear-gradient(135deg, #667eea, #764ba2);" onclick="nav('screen-student-login')"><i class="fas fa-user-graduate"></i> Öğrenci Girişi</button>
+            <button class="main-btn" style="width:100%; margin-top:15px; background: linear-gradient(135deg, #FF416C, #FF4B2B);" onclick="nav('screen-admin-login')"><i class="fas fa-chalkboard-teacher"></i> Akademisyen Girişi</button>
+        </div>
+    </div>
+
+    <div id="screen-admin-login" class="mobile-screen hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <div class="mobile-card" style="background: var(--glass-bg); padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; backdrop-filter: blur(20px); border: var(--glass-border);">
+            <h2 style="margin-top:0;">Akademisyen</h2>
+            <p style="opacity:0.7; margin-bottom:20px;">Lütfen şifrenizi giriniz.</p>
+            <input type="password" id="adminPass" placeholder="Yönetici Şifresi">
+            <button class="action-btn" style="width:100%;" onclick="adminLogin()">Giriş Yap</button>
+            <button class="secondary action-btn" style="width:100%; margin-top:10px;" onclick="nav('screen-home')">Geri</button>
         </div>
     </div>
 
     <div id="screen-admin-dash" class="dashboard-container hidden">
         <aside class="sidebar" id="sidebar">
-            <div style="font-size: 22px; font-weight: 800; margin-bottom: 50px;"><i class="fas fa-cube"></i> PANEL</div>
+            <div class="brand" style="font-size: 20px; font-weight: 800; margin-bottom: 40px;"><i class="fas fa-cube"></i> KONTROL</div>
             <div class="nav-item active" onclick="showPanel('courses')"><i class="fas fa-th-large"></i> Dersler</div>
-            <div class="nav-item" onclick="showPanel('upload')"><i class="fas fa-file-import"></i> Veri Yükle</div>
-            <div class="nav-item logout" style="margin-top: auto; color: #ff4757;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
+            <div class="nav-item" onclick="showPanel('upload')"><i class="fas fa-file-upload"></i> Veri Yükle</div>
+            <div class="nav-item logout" style="margin-top:auto; color: #FF416C;" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
         </aside>
 
         <main class="main-content">
-            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div class="dashboard-header" style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                 <div>
-                    <h2 id="dash-title" style="font-size: 36px; font-weight: 800; margin: 0;">Ders Listesi</h2>
-                    <div id="currentDate" style="opacity: 0.6; margin-top: 5px;"></div>
+                    <h2 id="dash-title" style="margin:0; font-size: 32px; font-weight: 800;">Dersler</h2>
+                    <span id="currentDate" style="opacity:0.6;"></span>
                 </div>
-                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:28px; cursor:pointer;"><i class="fas fa-bars"></i></button>
+                <button id="sidebarToggle" onclick="toggleSidebar()" style="background:transparent; border:none; color:white; font-size:24px; cursor:pointer;"><i class="fas fa-bars"></i></button>
             </div>
 
             <div id="courseListPanel" class="course-grid"></div>
 
-            <div id="uploadPanel" class="hidden">
-                <div class="glass-card" style="padding: 45px; max-width: 650px; margin: 0 auto;">
-                    <h3 style="margin-top:0;">Öğrenci Listesi Aktar (PDF)</h3>
-                    <input type="text" id="manualCourseCode" placeholder="Ders Kodu (Örn: MAT101)">
-                    <input type="text" id="manualCourseName" placeholder="Ders Adı">
-                    <div class="upload-area" onclick="document.getElementById('fileInput').click()" style="border: 2px dashed rgba(255,255,255,0.2); padding: 50px; border-radius: 24px; text-align: center; background: rgba(255,255,255,0.02);">
-                        <i class="fas fa-cloud-upload-alt" style="font-size: 60px; color: #00f260; margin-bottom: 15px;"></i>
-                        <p style="font-weight: 600;">Dosyayı Seçin veya Sürükleyin</p>
-                        <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleFileSelect(this)">
-                    </div>
-                    <div id="file-info" style="margin-top:15px; color:#00f260; font-weight:600;"></div>
-                    <button id="btnUpload" class="action-btn" style="width:100%; margin-top: 25px; display: none;" onclick="uploadData()">Veriyi Kaydet</button>
+            <div id="uploadPanel" class="hidden" style="max-width: 600px; margin: 0 auto; background: var(--glass-bg); padding: 30px; border-radius: 24px; border: var(--glass-border);">
+                <h3>Yeni Veri Yükleme (PDF)</h3>
+                <input type="text" id="manualCourseCode" placeholder="Ders Kodu">
+                <input type="text" id="manualCourseName" placeholder="Ders Adı">
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()" style="border: 2px dashed rgba(255,255,255,0.2); padding: 40px; border-radius: 20px; text-align: center; cursor: pointer;">
+                    <i class="fas fa-file-pdf" style="font-size: 40px; color:#FF416C; margin-bottom:10px;"></i>
+                    <p>PDF Seçmek İçin Tıklayın</p>
+                    <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleFileSelect(this)">
                 </div>
+                <div id="file-info" style="margin-top:10px; color:#00f260;"></div>
+                <button id="btnUpload" class="action-btn" style="width:100%; margin-top:20px; display:none;" onclick="uploadData()">Veriyi İşle</button>
             </div>
 
-            <div id="courseDetailPanel" class="detail-layout hidden">
-                <div class="detail-sidebar">
-                    <button class="action-btn secondary" onclick="closeCourse()"><i class="fas fa-arrow-left"></i> Geri</button>
-                    <div class="detail-tab-btn active" onclick="setTab('scan')">Yoklama & Oturum <i class="fas fa-qrcode"></i></div>
-                    <div class="detail-tab-btn" onclick="setTab('list')">Öğrenci Durumu <i class="fas fa-users"></i></div>
-                    <div class="detail-tab-btn" onclick="setTab('settings')">Ders Ayarları <i class="fas fa-cog"></i></div>
+            <div id="courseDetailPanel" class="detail-layout hidden" style="display:flex; gap:20px; height: 80vh;">
+                <div class="detail-sidebar" style="width: 250px; display: flex; flex-direction: column; gap:10px;">
+                    <button class="secondary action-btn" onclick="closeCourse()"><i class="fas fa-arrow-left"></i> Geri Dön</button>
+                    <div class="detail-tab-btn active" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; cursor:pointer;" onclick="setTab('scan')">Yoklama & Oturum</div>
+                    <div class="detail-tab-btn" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; cursor:pointer;" onclick="setTab('list')">Öğrenci Listesi</div>
+                    <div class="detail-tab-btn" style="padding:15px; background:rgba(255,255,255,0.05); border-radius:12px; cursor:pointer;" onclick="setTab('settings')">Ders Ayarları</div>
                 </div>
-                <div class="detail-main glass-card">
+                <div class="detail-main" style="flex:1; background: var(--glass-bg); padding: 30px; border-radius: 24px; border: var(--glass-border); overflow-y: auto;">
                     <div id="tab-scan" class="tab-content active">
                         <div id="week-list-view">
-                            <h3 style="margin-bottom: 25px;">Haftalık Akış</h3>
+                            <h3 style="margin-top:0;">Haftalık Akış</h3>
                             <div id="weeks-list-container"></div>
                         </div>
                         <div id="week-focus-view" class="hidden">
-                            <button onclick="backToWeeks()" class="action-btn secondary" style="padding: 10px 20px; margin-bottom: 25px;">← Haftalara Dön</button>
-                            <h2 id="focus-week-title" style="margin:0; font-weight: 800; color: #00f260;"></h2>
-                            <p id="week-status-msg" style="font-weight: 600; margin-bottom: 30px;"></p>
-                            
-                            <div id="session-controls" class="hidden">
-                                <div style="background: rgba(255,255,255,0.03); padding: 30px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1);">
-                                    <h4 style="margin-top:0;">Yeni Oturum Başlat</h4>
-                                    <label>İşlenecek Ders Saati:</label>
-                                    <select id="sessHours" style="margin-top:10px;"></select>
-                                    <div style="display:flex; gap:15px; margin-top:10px;">
-                                        <button class="action-btn" style="flex:1;" onclick="startSession()"><i class="fas fa-satellite-dish"></i> Başlat</button>
-                                        <button class="action-btn secondary" onclick="showStaticQR()"><i class="fas fa-qrcode"></i> Sabit QR</button>
-                                    </div>
+                            <button onclick="backToWeeks()" class="secondary action-btn" style="margin-bottom:20px;">Haftalara Dön</button>
+                            <h2 id="focus-week-title" style="margin:0; color:#00f260;"></h2>
+                            <p id="week-status-msg" style="font-weight: 600; margin-bottom:20px;"></p>
+                            <div id="session-controls" class="hidden" style="background:rgba(255,255,255,0.03); padding:20px; border-radius:20px;">
+                                <h4>Oturum Başlat</h4>
+                                <select id="sessHours"></select>
+                                <div style="display:flex; gap:10px; margin-top:10px;">
+                                    <button class="action-btn" style="flex:1;" onclick="startSession()">Başlat</button>
+                                    <button class="secondary action-btn" onclick="showStaticQR()">Sabit QR</button>
                                 </div>
                             </div>
-
-                            <div id="week-detail-view" style="margin-top: 40px;">
-                                <h4 style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;"><i class="fas fa-clipboard-list"></i> Mevcut Katılım</h4>
-                                <div id="week-attendees-list"></div>
-                            </div>
+                            <div id="week-attendees-list" style="margin-top:30px;"></div>
                         </div>
                     </div>
                     <div id="tab-list" class="tab-content hidden"><div id="studentList"></div></div>
                     <div id="tab-settings" class="tab-content hidden">
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
-                            <div><label>Devam Zorunluluğu %</label><input type="number" id="setLimitPct"></div>
-                            <div><label>Haftalık Toplam Saat</label><input type="number" id="setWeeklyHours"></div>
-                        </div>
-                        <button class="action-btn" onclick="saveSettings()">Değişiklikleri Uygula</button>
+                        <input type="number" id="setLimitPct" placeholder="Devam Sınırı %">
+                        <input type="number" id="setWeeklyHours" placeholder="Haftalık Saat">
+                        <button class="action-btn" onclick="saveSettings()">Kaydet</button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="screen-student-login" class="mobile-screen hidden">
-        <div class="mobile-card glass-card">
-            <h2>Öğrenci Paneli</h2>
+    <div id="screen-student-login" class="mobile-screen hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <div class="mobile-card" style="background: var(--glass-bg); padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; backdrop-filter: blur(20px); border: var(--glass-border);">
+            <h2>Öğrenci Girişi</h2>
             <div id="stu-step-1">
-                <input type="tel" id="stuId" placeholder="Öğrenci Numarası" style="text-align:center; font-size: 26px; font-weight: 800; letter-spacing: 4px;">
+                <input type="tel" id="stuId" placeholder="Öğrenci Numarası" style="text-align:center; font-size:20px;">
                 <button class="action-btn" style="width:100%;" onclick="checkStudentName()">Sorgula</button>
             </div>
             <div id="stu-step-2" class="hidden">
-                <h3 id="studentNameDisplay" style="color: #00f260; font-weight: 800;"></h3>
-                <div class="confirm-box" onclick="toggleCheckbox()" style="background:rgba(255,255,255,0.05); padding:15px; border-radius:15px; margin-bottom:20px; cursor:pointer; display:flex; gap:10px; align-items:center;">
-                    <div class="custom-checkbox" id="confirmCheck" style="width:24px; height:24px; border:2px solid #00f260; border-radius:6px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-check" style="display:none; color:black;"></i></div>
-                    <span style="font-size:13px; text-align:left;">Bilgilerimin doğruluğunu ve konum paylaşımını onaylıyorum.</span>
+                <h3 id="studentNameDisplay" style="color:#00f260;"></h3>
+                <div class="confirm-box" onclick="toggleCheckbox()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; margin-bottom:20px; cursor:pointer; display:flex; gap:10px; align-items:center;">
+                    <div id="confirmCheck" style="width:20px; height:20px; border:2px solid #00f260; border-radius:4px; display:flex; align-items:center; justify-content:center;"><i class="fas fa-check" style="display:none; color:black; font-size:12px;"></i></div>
+                    <span style="font-size:12px;">Bilgilerin doğruluğunu kabul ediyorum.</span>
                 </div>
-                <button id="btn-start-cam" class="action-btn" style="width:100%; opacity:0.5; pointer-events:none;" onclick="confirmAndStartCamera()">QR Kodu Okut</button>
+                <button id="btn-start-cam" class="action-btn" style="width:100%; opacity:0.5; pointer-events:none;" onclick="confirmAndStartCamera()">Kamerayı Aç</button>
             </div>
-            <button class="action-btn secondary" style="width:100%; margin-top:15px;" onclick="nav('screen-home')">Geri</button>
+            <button class="secondary action-btn" style="width:100%; margin-top:10px;" onclick="nav('screen-home')">Geri</button>
         </div>
     </div>
 
-    <div id="screen-student-scan" class="mobile-screen hidden">
-        <div class="mobile-card glass-card">
-            <h3 style="margin-bottom: 20px;">QR Kodunu Okutun</h3>
-            <div id="reader" style="width:100%; border-radius: 20px; overflow: hidden; border: 3px solid #00f260;"></div>
-            <button class="action-btn secondary" style="width:100%; margin-top:25px;" onclick="stopScan()">İptal Et</button>
+    <div id="screen-student-scan" class="mobile-screen hidden" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        <div class="mobile-card" style="background: var(--glass-bg); padding: 30px; border-radius: 30px; width: 90%; max-width: 400px; backdrop-filter: blur(20px); border: var(--glass-border);">
+            <h3>QR Okut</h3>
+            <div id="reader" style="border-radius:20px; overflow:hidden;"></div>
+            <button class="secondary action-btn" style="width:100%; margin-top:15px;" onclick="stopScan()">İptal</button>
         </div>
     </div>
 
-    <div id="fs-dynamic-session" class="fullscreen-overlay animated-gradient-bg hidden">
-        <div class="fs-session-container">
-            <div class="fs-list-area">
-                <div style="font-size: 24px; font-weight: 800; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:15px;"><i class="fas fa-users"></i> CANLI LİSTE</div>
-                <div id="live-student-list" style="overflow-y: auto; flex:1;"></div>
+    <div id="fs-dynamic-session" class="fullscreen-overlay animated-gradient-bg hidden" style="position:fixed; inset:0; z-index:9999; display:flex;">
+        <div class="fs-session-container" style="display:flex; width:100%; padding:20px; gap:20px;">
+            <div class="fs-list-area" style="width:350px; background:rgba(0,0,0,0.4); border-radius:24px; padding:20px; display:flex; flex-direction:column;">
+                <h3 style="margin-top:0;"><i class="fas fa-users"></i> CANLI LİSTE</h3>
+                <div id="live-student-list" style="overflow-y:auto; flex:1;"></div>
             </div>
-            <div class="fs-qr-area">
+            <div class="fs-qr-area" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
                 <div id="qrcode"></div>
-                <div id="qr-cover" class="qr-cover hidden" style="position:absolute; inset:0; background:rgba(0,0,0,0.9); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:28px;">
-                    <i class="fas fa-clock" style="font-size:80px; color:#ff4757; margin-bottom:20px;"></i>
-                    <h1>SÜRE DOLDU</h1>
-                </div>
-                <div id="countdownDisplay" style="font-size: 110px; font-weight: 800; color: #00f260; text-shadow: 0 0 40px rgba(0,242,96,0.5);">--</div>
-                <button class="action-btn secondary" style="margin-top:30px; width:250px;" onclick="resetScanUI()">OTURUMU KAPAT</button>
+                <div id="qr-cover" class="qr-cover hidden" style="position:absolute; inset:0; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; border-radius:24px;"><h1>SÜRE DOLDU</h1></div>
+                <div id="countdownDisplay" style="font-size:80px; font-weight:800; color:#00f260; margin-top:20px;">--</div>
+                <button class="action-btn secondary" onclick="resetScanUI()">KAPAT</button>
             </div>
         </div>
     </div>
 
-    <div id="fs-student-result" class="fullscreen-overlay hidden">
-        <div id="stu-res-card" class="glass-card" style="padding: 40px; text-align: center; max-width: 450px; width: 95%;"></div>
+    <div id="fs-student-result" class="fullscreen-overlay hidden" style="position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.9);">
+        <div id="stu-res-card" style="background:var(--glass-bg); padding:40px; border-radius:30px; text-align:center; max-width:400px; width:90%; border:var(--glass-border); backdrop-filter:blur(20px);"></div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbyhhO4c311udno6e-iBh2gKztQfyhTlTWZ2C4Qhpq4wtfSyllq6VOOL_FS9OaNcy63b/exec"; 
         const SITE_URL = "https://msefagor.github.io/Yoklama/"; 
 
-        let realAdminPass = ""; 
-        let currCourse = null; let cData = null; let qrScanner = null;
+        let currCourse = null; let cData = null; let qrScanner = null; 
         let countdownInt = null; let liveListInt = null;
-        let unlockedWeeks = []; let uploadFileContent = null; let selectedWeekNo = null;
+        let isChecked = false; let selectedWeekNo = null; let realAdminPass = ""; 
+        let unlockedWeeks = []; let uploadFileContent = null;
 
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long'});
 
-        // Her ders için benzersiz modern degrade üretir
+        // Renk Üretici (ID bazlı benzersiz modern degrade)
         function getCourseColor(id) {
-            const gradients = [
+            const colors = [
                 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)',
                 'linear-gradient(135deg, #00b09b 0%, #96c93d 100%)',
@@ -284,7 +242,7 @@
             ];
             let hash = 0;
             for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
-            return gradients[Math.abs(hash) % gradients.length];
+            return colors[Math.abs(hash) % colors.length];
         }
 
         async function api(payload) {
@@ -293,17 +251,17 @@
             try {
                 const req = await fetch(API_URL, {method:'POST', body:JSON.stringify(payload)});
                 const res = await req.json(); hideLoader(); return res;
-            } catch(e) { hideLoader(); showToast("Bağlantı kesildi!"); return null; }
+            } catch(e) { hideLoader(); showToast("Hata oluştu"); return null; }
         }
 
         async function adminLogin() {
             const pass = document.getElementById('adminPass').value;
             const res = await api({action:'admin_login', password:pass});
             if(res && res.success) {
-                realAdminPass = pass;
+                realAdminPass = res.realPass;
                 nav('screen-admin-dash');
                 renderCourseGrid(res.courses);
-            } else showToast("Hatalı Giriş!");
+            } else showToast("Hatalı Şifre");
         }
 
         function renderCourseGrid(courses) {
@@ -312,29 +270,22 @@
                 const el = document.createElement('div');
                 el.className = "course-card";
                 el.style.background = getCourseColor(c.id);
-                el.innerHTML = `
-                    <div>
-                        <div class="cc-code">${c.id}</div>
-                        <div class="cc-name">${c.name}</div>
-                    </div>
-                    <div style="text-align:right;"><i class="fas fa-arrow-right" style="font-size:24px;"></i></div>
-                `;
+                el.innerHTML = `<div><div class="cc-code">${c.id}</div><div class="cc-name">${c.name}</div></div><div style="text-align:right;"><i class="fas fa-arrow-right" style="font-size:20px;"></i></div>`;
                 el.onclick = () => loadCourse(c.id);
                 p.appendChild(el);
             });
         }
 
         async function loadCourse(id) {
-            currCourse = id;
-            const res = await api({action:'get_course_details', courseId:id});
+            currCourse = id; const res = await api({action:'get_course_details', courseId:id});
             if(res && res.success) {
                 cData = res;
                 document.getElementById('courseListPanel').classList.add('hidden');
                 document.getElementById('courseDetailPanel').classList.remove('hidden');
                 document.getElementById('setLimitPct').value = res.settings.limitPct;
                 document.getElementById('setWeeklyHours').value = res.settings.weeklyHours;
-                renderWeeksList(res.weeks);
-                renderStudentList(res.students);
+                renderWeeksList(res.weeks); renderStudentList(res.students);
+                setTab('scan');
             }
         }
 
@@ -343,7 +294,7 @@
             weeks.forEach(w => {
                 const el = document.createElement('div');
                 let wClass = "week-normal";
-                let badge = "Ders Haftası";
+                let badge = "Ders";
                 
                 if(w.type === 'Vize') { wClass = "week-vize"; badge = "VİZE"; }
                 else if(w.type === 'Final') { wClass = "week-final"; badge = "FİNAL"; }
@@ -351,13 +302,7 @@
                 else if(w.type === 'Tatil') { wClass = "week-tatil"; badge = "TATİL"; }
 
                 el.className = `week-item-desktop ${wClass}`;
-                el.innerHTML = `
-                    <div>
-                        <div style="font-weight:800; font-size:20px;">${w.weekNo}. Hafta</div>
-                        <div style="font-size:13px; opacity:0.6;">${w.date || '-'}</div>
-                    </div>
-                    <div style="font-weight:800; font-size:12px; opacity:0.8; letter-spacing:1px;">${badge}</div>
-                `;
+                el.innerHTML = `<div><b>${w.weekNo}. Hafta</b> <small style="margin-left:10px; opacity:0.6;">${w.date||'-'}</small></div><div style="font-weight:800; font-size:11px;">${badge}</div>`;
                 el.onclick = () => openWeekFocus(w);
                 container.appendChild(el);
             });
@@ -372,43 +317,45 @@
             const msgEl = document.getElementById('week-status-msg');
             const ctrlEl = document.getElementById('session-controls');
             
-            const examTypes = ['Vize', 'Final', 'Bütünleme', 'Tatil'];
-            if(examTypes.includes(week.type)) {
+            const isExam = ['Vize', 'Final', 'Bütünleme', 'Tatil'].includes(week.type);
+            if(isExam) {
                 msgEl.innerText = `⚠️ ${week.type} haftasında yoklama alınamaz.`;
                 msgEl.style.color = "#ff4757";
                 ctrlEl.classList.add('hidden');
             } else {
-                msgEl.innerText = `✅ Yoklama başlatmak için hazır.`;
+                msgEl.innerText = `✅ Oturum başlatmaya uygun.`;
                 msgEl.style.color = "#00f260";
                 ctrlEl.classList.remove('hidden');
-                updateHoursDropdown(week);
+                const hSel = document.getElementById('sessHours'); hSel.innerHTML = "";
+                for(let i=1; i<=4; i++) hSel.add(new Option(i + " Saat", i));
             }
-            loadWeekAttendees(currCourse, week.weekNo);
+            loadWeekAttendees(currCourse, week.weekNo, 'week-attendees-list');
         }
 
+        // --- Fonksiyonlar (Aynen Korundu) ---
+        function nav(id) { document.querySelectorAll('.mobile-screen, .dashboard-container, .fullscreen-overlay').forEach(el => el.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
+        function showPanel(p) { document.getElementById('courseListPanel').classList.toggle('hidden', p !== 'courses'); document.getElementById('uploadPanel').classList.toggle('hidden', p !== 'upload'); document.getElementById('courseDetailPanel').classList.add('hidden'); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+        function showLoader() { document.getElementById('loader').classList.remove('hidden'); }
+        function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
+        function backToWeeks() { document.getElementById('week-focus-view').classList.add('hidden'); document.getElementById('week-list-view').classList.remove('hidden'); }
+        function setTab(t) { document.querySelectorAll('.tab-content').forEach(e=>e.classList.add('hidden')); document.getElementById('tab-'+t).classList.remove('hidden'); }
+        function showToast(m) { const c = document.getElementById('toast-container'); const e = document.createElement('div'); e.className='toast'; e.innerText=m; c.appendChild(e); setTimeout(()=>e.remove(),3000); }
+        function toggleCheckbox() { isChecked = !isChecked; const b = document.getElementById('confirmCheck'); const btn = document.getElementById('btn-start-cam'); b.style.background = isChecked ? '#00f260' : 'transparent'; b.querySelector('i').style.display = isChecked ? 'block' : 'none'; btn.style.opacity = isChecked ? '1' : '0.5'; btn.style.pointerEvents = isChecked ? 'auto' : 'none'; }
+        
+        // QR İşlemleri
         async function startSession() {
             const hrs = document.getElementById('sessHours').value;
             navigator.geolocation.getCurrentPosition(async (pos) => {
-                const res = await api({
-                    action:'start_session', courseId:currCourse, weekNo:selectedWeekNo, hoursVal:hrs,
-                    lat:pos.coords.latitude, lng:pos.coords.longitude
-                });
+                const res = await api({action:'start_session', courseId:currCourse, weekNo:selectedWeekNo, hoursVal:hrs, lat:pos.coords.latitude, lng:pos.coords.longitude});
                 if(res && res.success) {
                     nav('fs-dynamic-session');
                     const q = document.getElementById('qrcode'); q.innerHTML = "";
                     new QRCode(q, {text:currCourse, width:400, height:400});
-                    
                     let dur = cData.settings.qrTime || 15;
-                    const disp = document.getElementById('countdownDisplay');
-                    if(countdownInt) clearInterval(countdownInt);
-                    disp.innerText = dur;
-                    countdownInt = setInterval(() => {
-                        dur--; disp.innerText = dur;
-                        if(dur <= 0) { clearInterval(countdownInt); document.getElementById('qr-cover').classList.remove('hidden'); }
-                    }, 1000);
-                    
-                    if(liveListInt) clearInterval(liveListInt);
-                    updateLiveList(); liveListInt = setInterval(updateLiveList, 4000);
+                    const disp = document.getElementById('countdownDisplay'); disp.innerText = dur;
+                    countdownInt = setInterval(() => { dur--; disp.innerText = dur; if(dur<=0) { clearInterval(countdownInt); document.getElementById('qr-cover').classList.remove('hidden'); }}, 1000);
+                    updateLiveList(); liveListInt = setInterval(updateLiveList, 3000);
                 }
             });
         }
@@ -419,48 +366,24 @@
             if(res && res.success) {
                 cont.innerHTML = "";
                 res.logs.forEach(l => {
-                    const div = document.createElement('div');
-                    div.style.cssText = "padding:12px; background:rgba(255,255,255,0.05); margin-bottom:8px; border-radius:12px; display:flex; justify-content:space-between;";
-                    div.innerHTML = `<span>${l.name}</span><span style="opacity:0.5;">${l.studentId}</span>`;
-                    cont.appendChild(div);
+                    const d = document.createElement('div');
+                    d.style.padding = "10px"; d.style.borderBottom = "1px solid rgba(255,255,255,0.1)";
+                    d.innerHTML = `<b>${l.name}</b> <small>${l.studentId}</small>`;
+                    cont.appendChild(d);
                 });
             }
         }
 
-        function resetScanUI() { 
-            if(countdownInt) clearInterval(countdownInt); if(liveListInt) clearInterval(liveListInt);
-            document.getElementById('fs-dynamic-session').classList.add('hidden'); 
-            loadCourse(currCourse);
-        }
-
-        // --- Diğer Fonksiyonlar ---
-        function nav(id) { document.querySelectorAll('.mobile-screen, .dashboard-container, .fullscreen-overlay').forEach(el => el.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); }
-        function showPanel(p) { document.getElementById('courseListPanel').classList.toggle('hidden', p !== 'courses'); document.getElementById('uploadPanel').classList.toggle('hidden', p !== 'upload'); document.getElementById('courseDetailPanel').classList.add('hidden'); }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-        function showLoader() { document.getElementById('loader').classList.remove('hidden'); }
-        function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
-        function closeCourse() { document.getElementById('courseDetailPanel').classList.add('hidden'); document.getElementById('courseListPanel').classList.remove('hidden'); }
-        function backToWeeks() { document.getElementById('week-focus-view').classList.add('hidden'); document.getElementById('week-list-view').classList.remove('hidden'); }
-        function setTab(t) { document.querySelectorAll('.tab-content').forEach(e=>e.classList.add('hidden')); document.getElementById('tab-'+t).classList.remove('hidden'); document.querySelectorAll('.detail-tab-btn').forEach(b=>b.classList.remove('active')); }
-        function showToast(m) { const c = document.getElementById('toast-container'); const e = document.createElement('div'); e.className='toast'; e.innerText=m; c.appendChild(e); setTimeout(()=>e.remove(),3000); }
-        function showStaticQR() { document.getElementById('fs-student-result').classList.remove('hidden'); const card = document.getElementById('stu-res-card'); card.innerHTML = `<h3>Ders Giriş QR</h3><div id="static-qr" style="display:flex; justify-content:center; margin:20px 0;"></div><button class="action-btn" onclick="this.parentElement.parentElement.classList.add('hidden')">Kapat</button>`; new QRCode(document.getElementById('static-qr'), {text:SITE_URL, width:250, height:250}); }
+        function resetScanUI() { clearInterval(countdownInt); clearInterval(liveListInt); nav('screen-admin-dash'); loadCourse(currCourse); }
 
         async function checkStudentName() {
             const id = document.getElementById('stuId').value;
-            const res = await api({ action: 'get_student_name', studentId: id });
+            const res = await api({action:'get_student_name', studentId:id});
             if(res && res.success) {
                 document.getElementById('stu-step-1').classList.add('hidden');
                 document.getElementById('stu-step-2').classList.remove('hidden');
                 document.getElementById('studentNameDisplay').innerText = res.name;
-            } else showToast("Öğrenci Bulunamadı!");
-        }
-
-        function toggleCheckbox() {
-            isChecked = !isChecked;
-            const b = document.getElementById('confirmCheck');
-            const btn = document.getElementById('btn-start-cam');
-            if(isChecked) { b.style.background = '#00f260'; btn.style.opacity='1'; btn.style.pointerEvents='auto'; b.querySelector('i').style.display='block'; }
-            else { b.style.background = 'transparent'; btn.style.opacity='0.5'; btn.style.pointerEvents='none'; b.querySelector('i').style.display='none'; }
+            } else showToast("Öğrenci Bulunamadı");
         }
 
         function confirmAndStartCamera() {
@@ -473,45 +396,29 @@
                     if(res && res.success) {
                         const modal = document.getElementById('fs-student-result');
                         const card = document.getElementById('stu-res-card');
-                        card.innerHTML = `<i class="fas fa-check-circle" style="font-size:60px; color:#00f260;"></i><h2>Yoklama Başarılı</h2><p>Kalan Devamsızlık Hakkınız: <b>${res.stat.remaining} Saat</b></p><button class="action-btn" style="width:100%;" onclick="location.reload()">Tamam</button>`;
+                        card.innerHTML = `<i class="fas fa-check-circle" style="font-size:60px; color:#00f260; margin-bottom:20px;"></i><h2>Kayıt Başarılı</h2><p>Kalan Hakkınız: <b>${res.stat.remaining} Saat</b></p><button class="action-btn" style="width:100%;" onclick="location.reload()">Tamam</button>`;
                         modal.classList.remove('hidden');
                     } else { alert(res.error); nav('screen-home'); }
-                }, () => { alert("GPS kapalı!"); nav('screen-home'); });
+                }, () => { alert("Konum İzni Gerekli!"); nav('screen-home'); });
             });
         }
-
-        function handleFileSelect(input) {
-            const file = input.files[0];
-            if(file) {
-                document.getElementById('file-info').innerText = "Seçilen: " + file.name;
-                const reader = new FileReader();
-                reader.onload = (e) => { uploadFileContent = e.target.result.split(',')[1]; document.getElementById('btnUpload').style.display = 'block'; };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function uploadData() {
-            const code = document.getElementById('manualCourseCode').value;
-            const name = document.getElementById('manualCourseName').value;
-            const res = await api({ action: 'upload_pdf_data', fileData: uploadFileContent, courseCode: code, courseName: name });
-            if(res && res.success) { alert(res.msg); location.reload(); } else alert(res.error);
-        }
-
-        function updateHoursDropdown(w) {
-            const hSel = document.getElementById('sessHours'); hSel.innerHTML = "";
-            for(let i=1; i<=4; i++) hSel.add(new Option(i + " Saat", i));
-        }
+        function stopScan() { if(qrScanner) qrScanner.stop(); nav('screen-home'); }
 
         function renderStudentList(list) {
             const cont = document.getElementById('studentList'); cont.innerHTML = "";
-            list.sort((a,b) => a.remaining - b.remaining).forEach(s => {
+            list.sort((a,b)=>a.remaining-b.remaining).forEach(s => {
                 const d = document.createElement('div');
-                d.style.cssText = "padding:18px; background:rgba(255,255,255,0.05); border-radius:18px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;";
+                d.style.cssText = "padding:15px; background:rgba(255,255,255,0.05); border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;";
                 let color = s.remaining <= 0 ? "#ff4757" : "#00f260";
-                d.innerHTML = `<div><div style="font-weight:800;">${s.name}</div><div style="font-size:12px; opacity:0.5;">${s.id}</div></div><div style="text-align:right;"><div style="color:${color}; font-weight:800;">Kalan: ${s.remaining}s</div><div style="font-size:11px; opacity:0.4;">Sınır: ${s.maxAbsent}s</div></div>`;
+                d.innerHTML = `<div><b>${s.name}</b><br><small>${s.id}</small></div><div style="text-align:right;"><span style="color:${color}; font-weight:800;">Kalan: ${s.remaining}s</span></div>`;
                 cont.appendChild(d);
             });
         }
+
+        function handleFileSelect(input) { const file = input.files[0]; if(file) { document.getElementById('file-info').innerText = file.name; const reader = new FileReader(); reader.onload = (e) => { uploadFileContent = e.target.result.split(',')[1]; document.getElementById('btnUpload').style.display='block'; }; reader.readAsDataURL(file); } }
+        async function uploadData() { const code = document.getElementById('manualCourseCode').value; const name = document.getElementById('manualCourseName').value; const res = await api({action:'upload_pdf_data', fileData:uploadFileContent, courseCode:code, courseName:name}); if(res && res.success) { alert(res.msg); location.reload(); } else alert(res.error); }
+        async function saveSettings() { const res = await api({action:'save_settings', courseId:currCourse, limitPct:document.getElementById('setLimitPct').value, weeklyHours:document.getElementById('setWeeklyHours').value, weeks:cData.weeks}); if(res&&res.success) { showToast("Kaydedildi"); loadCourse(currCourse); } }
+        function showStaticQR() { document.getElementById('fs-student-result').classList.remove('hidden'); document.getElementById('stu-res-card').innerHTML = `<h3>Sabit QR</h3><div id="static-qr" style="display:flex; justify-content:center; margin-bottom:20px;"></div><button class="action-btn" onclick="this.parentElement.parentElement.classList.add('hidden')">Kapat</button>`; new QRCode(document.getElementById('static-qr'), {text:SITE_URL, width:200, height:200}); }
     </script>
 </body>
 </html>
